@@ -162,6 +162,24 @@
   text-decoration: underline;
 }
 
+
+.form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  background-color: white;
+  margin-top: 5px;
+  appearance: menulist; /* Shows the dropdown arrow */
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .register-page {
