@@ -41,18 +41,30 @@ function App() {
           const config = { headers: { Authorization: `Bearer ${token}` } };
           const response = await axios.get('http://localhost:5000/api/auth/me', config);
           setIsAdmin(response.data.isAdmin);
+        } else {
+          setIsAdmin(false);
         }
       } catch (err) {
         console.error('Failed to fetch admin status:', err);
         localStorage.removeItem('token');
+        setIsAdmin(false);
       } finally {
         setIsLoading(false);
       }
     };
+    
     fetchUserAdminStatus();
+    
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      fetchUserAdminStatus();
+    };
+    
+    window.addEventListener('authChange', handleAuthChange);
+    return () => window.removeEventListener('authChange', handleAuthChange);
   }, []);
 
-  const ProtectedRoute = ({ children }) => {
+    const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem('token');
     if (!token) return <Navigate to="/login" />;
     if (isLoading) return <div>Loading...</div>; // Show loading while fetching admin status

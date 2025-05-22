@@ -30,9 +30,14 @@ const Login = () => {
       setSuccess('Login successful!');
       setError(null);
 
-      // Navigate to home after successful login
+      // Navigate based on user role
       setTimeout(() => {
-        navigate('/');
+        if (loginResponse.data.user.isAdmin) {
+          // Use window.location for a full page reload to ensure App.js re-fetches admin status
+          window.location.href = '/admin';
+        } else {
+          navigate('/');
+        }
       }, 1500);
     } catch (err) {
       console.error('Login error:', err);
