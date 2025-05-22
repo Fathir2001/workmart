@@ -85,7 +85,8 @@ const Category = ({ onCategorySelect }) => {
           <button className="nav-btn">→</button>
         </div>
       </div>
-      <div className="category-list">
+      
+      <div className="categories-grid">
         {categories.map((cat) => (
           <div
             key={cat.value}
@@ -97,7 +98,10 @@ const Category = ({ onCategorySelect }) => {
           </div>
         ))}
       </div>
-      <div className="providers-section">
+      
+      <div className="category-service-providers">
+        <h3 className="providers-heading">Service Providers in {selectedCategory}</h3>
+        
         {loading ? (
           <p className="status-message">Loading service providers...</p>
         ) : error ? (
@@ -105,9 +109,9 @@ const Category = ({ onCategorySelect }) => {
         ) : serviceProviders.length === 0 ? (
           <p className="status-message">No service providers found in the {selectedCategory} category.</p>
         ) : (
-          <div className="providers-list">
+          <div className="providers-by-category">
             {serviceProviders.map((provider) => (
-              <div key={provider._id} className="provider-item">
+              <div key={provider._id} className="provider-card">
                 <div className="provider-image-container">
                   <img
                     src={
@@ -116,41 +120,38 @@ const Category = ({ onCategorySelect }) => {
                         : 'http://localhost:5000/uploads/profile/profile.png'
                     }
                     alt={provider.name || 'Service Provider'}
-                    className="provider-image"
+                    className="worker-image"
                     onError={(e) => {
                       console.error(`Failed to load image: ${e.target.src}`);
                       e.target.src = 'http://localhost:5000/uploads/profile/profile.png';
                     }}
                   />
                 </div>
-                <div className="provider-header">
-                  <h3 className="provider-title">{provider.name}</h3>
-                </div>
-                <div className="provider-meta">
-                  <span className="provider-meta-item">
+                <div className="worker-info">
+                  <h3 className="worker-name">{provider.name}</h3>
+                  <p className="worker-category">
                     <FaTag className="meta-icon" /> {provider.category}
-                  </span>
-                  <span className="provider-meta-item">
+                  </p>
+                  <div className="worker-location">
                     <FaMapMarkerAlt className="meta-icon" /> {provider.location || 'Location not specified'}
-                  </span>
+                  </div>
+                  <div className="worker-stats">
+                    <div className="worker-rating">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          style={{ color: i < (provider.rating || 0) ? 'gold' : 'grey', marginRight: '2px' }}
+                        />
+                      ))}
+                    </div>
+                    <div className="worker-jobs">
+                      Jobs: {provider.jobCount || 0}
+                    </div>
+                  </div>
+                  <p className="worker-since">
+                    Member since {provider.memberSince || new Date(provider.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
-                <div className="provider-meta">
-                  <span className="provider-meta-item">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar
-                        key={i}
-                        className="meta-icon"
-                        style={{ color: i < (provider.rating || 0) ? 'gold' : 'grey' }}
-                      />
-                    ))}
-                  </span>
-                </div>
-                <p className="provider-description">
-                  Member since {provider.memberSince || new Date(provider.createdAt).toLocaleDateString()}
-                </p>
-                <p className="provider-job-count">
-                  Job Count: {provider.jobCount || 0}
-                </p>
               </div>
             ))}
           </div>
