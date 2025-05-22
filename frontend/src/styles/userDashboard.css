@@ -1,0 +1,55 @@
+/* Modern and Stylish User Dashboard */
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff8c00, #ff2e63);
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+}
+
+button {
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+}
+
+button:nth-child(1) {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+button:nth-child(2) {
+    background: linear-gradient(135deg, #16a085, #f4d03f);
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}

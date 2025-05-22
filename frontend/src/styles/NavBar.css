@@ -1,0 +1,27 @@
+.navbar {
+    background-color: black;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 20px;
+  }
+  
+  .language-selector select {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .language-selector select:focus {
+    outline: none;
+  }
+  
+  .language-selector option {
+    background: black;
+    color: white;
+  }
+  

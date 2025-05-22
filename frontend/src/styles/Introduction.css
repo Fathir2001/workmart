@@ -1,0 +1,121 @@
+.introduction-section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .introduction-content {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+  
+  .introduction-text {
+    flex: 1;
+  }
+  
+  .introduction-title {
+    font-size: 60px;
+    color: #333333;
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: left;
+  }
+  
+  .introduction-subtitle {
+    font-size: 48px;
+    color: #333333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  
+  .introduction-description {
+    font-size: 16px;
+    color: #555555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 600px;
+  }
+  
+  .introduction-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .intro-button {
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+  
+  .work-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .work-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+  
+  .hire-button {
+    background-color: #f8f8f8;
+    color: #333333;
+    border: 1px solid #ddd;
+  }
+  
+  .hire-button:hover {
+    background-color: #e9e9e9;
+    transform: translateY(-2px);
+  }
+  
+  .introduction-image {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .side-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .introduction-content {
+      flex-direction: column;
+    }
+    
+    .introduction-image {
+      justify-content: center;
+      margin-top: 40px;
+    }
+    
+    .introduction-title {
+      font-size: 48px;
+    }
+    
+    .introduction-subtitle {
+      font-size: 36px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .introduction-buttons {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .intro-button {
+      width: 100%;
+    }
+  }

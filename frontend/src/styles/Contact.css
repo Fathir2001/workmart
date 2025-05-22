@@ -1,0 +1,55 @@
+.contact-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.contact-image img {
+  width: 500px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.contact-details {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin-left: 20px;
+}
+
+.contact-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Updated for circular icon background */
+.icon-circle {
+  background-color: #ff4747;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-icon {
+  font-size: 18px;
+  color: white; /* Icon color is now white */
+}
+
+.contact-box h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.contact-box p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}

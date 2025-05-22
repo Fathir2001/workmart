@@ -1,0 +1,94 @@
+.comments-section {
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  .comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+  
+  .comments-title {
+    font-size: 32px;
+    color: #333333;
+    margin: 0;
+  }
+  
+  .comment-navigation {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .nav-button {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-button:hover {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+  }
+  
+  .comments-row {
+    display: flex;
+    gap: 30px;
+    padding: 0 20px;
+  }
+  
+  .comment-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .comment-profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+  
+  .comment-name {
+    font-size: 20px;
+    color: #333333;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .comment-text {
+    font-size: 16px;
+    color: #555555;
+    line-height: 1.6;
+    margin: 0;
+  }

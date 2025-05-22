@@ -1,0 +1,44 @@
+.work-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .work-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .work-header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .post-job-btn {
+    padding: 10px 20px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .post-job-btn:hover {
+    background: #e60000;
+  }
+  
+  .work-content {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .work-content > *:first-child {
+    width: 250px;
+    margin-right: 20px;
+  }

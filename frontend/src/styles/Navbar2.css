@@ -1,0 +1,130 @@
+.navbar {
+  background-color: #ffffff;
+  padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center; /* Ensure vertical alignment */
+  gap: 25px; /* Slightly reduced gap for better spacing */
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #555555;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #000000;
+}
+
+.post-job-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 40px;
+  background: #ff6666;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.post-job-btn:hover {
+  background: #ff4d4d;
+  transform: scale(1.05);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.post-job-text {
+  font-size: 14px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 250px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  padding: 8px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: #aaaaaa;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon {
+  color: #555555;
+  font-size: 18px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .post-job-btn {
+    width: 120px;
+    height: 36px;
+    border-radius: 25px;
+  }
+
+  .post-job-text {
+    font-size: 12px;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 300px;
+  }
+}
