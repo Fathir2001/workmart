@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   phone: { type: String, unique: true, sparse: true },
   password: { type: String, required: true },
-  location: { type: String }, // Add location field
+  location: { type: String },
   isAdmin: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });

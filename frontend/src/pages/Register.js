@@ -6,7 +6,8 @@ import workerImage from '../Images/female-male-workers-wearing-work-clothes 1.pn
 
 const Register = () => {
   const [name, setName] = useState('');
-  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
   const [error, setError] = useState(null);
@@ -17,7 +18,8 @@ const Register = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', {
         name,
-        emailOrPhone,
+        email,
+        phone,
         password,
         location,
       });
@@ -62,14 +64,27 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email or Phone Number</label>
+              <label htmlFor="email">Email</label>
               <input 
-                type="text" 
+                type="email" 
                 id="email" 
                 className="form-input" 
-                placeholder="Enter your email or phone" 
-                value={emailOrPhone}
-                onChange={(e) => setEmailOrPhone(e.target.value)}
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="phone">Phone Number</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                className="form-input" 
+                placeholder="Enter your phone number" 
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required
               />
             </div>
