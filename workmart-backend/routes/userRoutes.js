@@ -52,26 +52,42 @@ router.post('/login', async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
     
-    // Find user by either email or phone
-    const user = await User.findOne({ 
-      $or: [
-        { email: emailOrPhone },
-        { phone: emailOrPhone }
-      ]
+    // Find user by email or phone
+    const user = await User.findOne({
+      $or: [{ email: emailOrPhone }, { phone: emailOrPhone }]
     });
     
-    if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign(
-        { userId: user._id }, 
-        process.env.JWT_SECRET, 
-        { expiresIn: '1h' }
-      );
-      res.json({ token, user });
-    } else {
-      res.status(401).json({ message: 'Invalid credentials' });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
+    
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+    
+    // Create token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '1h' }
+    );
+    
+    // Send response with token and user data
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        isAdmin: user.isAdmin
+      }
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

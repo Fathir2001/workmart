@@ -8,6 +8,7 @@ const ServiceProvider = require('../models/ServiceProvider');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { verifyAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -47,47 +48,21 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-const verifyAdmin = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      console.log('No token provided in Authorization header');
-      return res.status(401).json({ message: 'No token provided' });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      console.log(`User not found for ID: ${decoded.id}`);
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (!user.isAdmin) {
-      console.log(`User ${decoded.id} is not an admin`);
-      return res.status(403).json({ message: 'Access denied' });
-    }
-
-    req.user = decoded;
-    next();
-  } catch (err) {
-    console.error('VerifyAdmin error:', err.message);
-    res.status(401).json({ message: 'Invalid token', error: err.message });
-  }
-};
+// Protect all routes with verifyAdmin middleware
+router.use(verifyAdmin);
 
 // Get all users
-router.get('/users', verifyAdmin, async (req, res) => {
+router.get('/users', async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('-password');
     res.json(users);
   } catch (err) {
-    console.error('Error fetching users:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Create a new user
-router.post('/users', verifyAdmin, async (req, res) => {
+router.post('/users', async (req, res) => {
   try {
     const { name, email, password, isAdmin, location } = req.body;
     const user = await User.create({ name, email, password, isAdmin, location });
@@ -99,7 +74,7 @@ router.post('/users', verifyAdmin, async (req, res) => {
 });
 
 // Update a user
-router.put('/users/:id', verifyAdmin, async (req, res) => {
+router.put('/users/:id', async (req, res) => {
   try {
     const { name, email, isAdmin, location } = req.body;
     const user = await User.findByIdAndUpdate(
@@ -116,18 +91,17 @@ router.put('/users/:id', verifyAdmin, async (req, res) => {
 });
 
 // Get all jobs
-router.get('/jobs', verifyAdmin, async (req, res) => {
+router.get('/jobs', async (req, res) => {
   try {
-    const jobs = await Job.find().populate('postedBy');
+    const jobs = await Job.find();
     res.json(jobs);
   } catch (err) {
-    console.error('Error fetching jobs:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Create a new job
-router.post('/jobs', verifyAdmin, async (req, res) => {
+router.post('/jobs', async (req, res) => {
   try {
     const { title, description } = req.body;
     const job = await Job.create({ title, description, postedBy: req.user.id });
@@ -139,7 +113,7 @@ router.post('/jobs', verifyAdmin, async (req, res) => {
 });
 
 // Update a job
-router.put('/jobs/:id', verifyAdmin, async (req, res) => {
+router.put('/jobs/:id', async (req, res) => {
   try {
     const { title, description } = req.body;
     const job = await Job.findByIdAndUpdate(
@@ -156,18 +130,17 @@ router.put('/jobs/:id', verifyAdmin, async (req, res) => {
 });
 
 // Get all contacts
-router.get('/contacts', verifyAdmin, async (req, res) => {
+router.get('/contacts', async (req, res) => {
   try {
     const contacts = await Contact.find();
     res.json(contacts);
   } catch (err) {
-    console.error('Error fetching contacts:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Create a new contact
-router.post('/contacts', verifyAdmin, async (req, res) => {
+router.post('/contacts', async (req, res) => {
   try {
     const { name, email, message } = req.body;
     const contact = await Contact.create({ name, email, message });
@@ -179,7 +152,7 @@ router.post('/contacts', verifyAdmin, async (req, res) => {
 });
 
 // Update a contact
-router.put('/contacts/:id', verifyAdmin, async (req, res) => {
+router.put('/contacts/:id', async (req, res) => {
   try {
     const { name, email, message } = req.body;
     const contact = await Contact.findByIdAndUpdate(
@@ -196,7 +169,7 @@ router.put('/contacts/:id', verifyAdmin, async (req, res) => {
 });
 
 // Delete a resource (users, jobs, contacts, service-providers)
-router.delete('/:type/:id', verifyAdmin, async (req, res) => {
+router.delete('/:type/:id', async (req, res) => {
   try {
     const { type, id } = req.params;
 
@@ -252,7 +225,7 @@ router.delete('/:type/:id', verifyAdmin, async (req, res) => {
 });
 
 // Get all service providers (Admin only)
-router.get('/service-providers', verifyAdmin, async (req, res) => {
+router.get('/service-providers', async (req, res) => {
   try {
     const serviceProviders = await ServiceProvider.find();
     res.json(serviceProviders);
@@ -263,7 +236,7 @@ router.get('/service-providers', verifyAdmin, async (req, res) => {
 });
 
 // Create a new service provider (Admin only) with file upload
-router.post('/service-providers', verifyAdmin, upload.single('profilePic'), async (req, res) => {
+router.post('/service-providers', upload.single('profilePic'), async (req, res) => {
   try {
     const { name, category, location, jobCount, rating, memberSince } = req.body;
 
@@ -294,7 +267,7 @@ router.post('/service-providers', verifyAdmin, upload.single('profilePic'), asyn
 });
 
 // Update a service provider (Admin only)
-router.put('/service-providers/:id', verifyAdmin, upload.single('profilePic'), async (req, res) => {
+router.put('/service-providers/:id', upload.single('profilePic'), async (req, res) => {
   try {
     const { name, category, location, jobCount, rating, memberSince } = req.body;
 

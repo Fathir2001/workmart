@@ -45,8 +45,8 @@ router.get('/me', async (req, res) => {
     if (!token) return res.status(401).json({ message: 'No token provided' });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    // Change from decoded.id to decoded.userId to match how you're creating tokens
-    const user = await User.findById(decoded.userId);
+    // Fix: Use decoded.id instead of decoded.userId to match the token creation
+    const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json({ isAdmin: user.isAdmin });

@@ -20,9 +20,25 @@ const Login = () => {
         password,
       });
 
-      // Store token and user data in localStorage
+      // Check if we have both token and user data
+      if (!loginResponse.data.token) {
+        throw new Error('No authentication token received');
+      }
+
+      // Store token in localStorage
       localStorage.setItem('token', loginResponse.data.token);
-      localStorage.setItem('user', JSON.stringify(loginResponse.data.user));
+      
+      // Fetch user profile to get isAdmin status
+      const userProfileResponse = await axios.get('http://localhost:5000/api/auth/me', {
+        headers: { Authorization: `Bearer ${loginResponse.data.token}` }
+      });
+      
+      // Store user data with isAdmin property
+      const userData = {
+        ...loginResponse.data.user,
+        isAdmin: userProfileResponse.data.isAdmin
+      };
+      localStorage.setItem('user', JSON.stringify(userData));
 
       // Dispatch a custom event to notify navbar of authentication change
       window.dispatchEvent(new Event('authChange'));
@@ -32,8 +48,7 @@ const Login = () => {
 
       // Navigate based on user role
       setTimeout(() => {
-        if (loginResponse.data.user.isAdmin) {
-          // Use window.location for a full page reload to ensure App.js re-fetches admin status
+        if (userProfileResponse.data.isAdmin) {
           window.location.href = '/admin';
         } else {
           navigate('/');
