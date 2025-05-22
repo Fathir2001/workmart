@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "../styles/Home.css";
-import NavBar2 from "../components/Navbar2";
+// import NavBar2 from "../components/Navbar2";
 import Introduction from "../components/Introduction";
 import Introduction2 from "../components/Introduction2";
 import Comments from "../components/Comments";
