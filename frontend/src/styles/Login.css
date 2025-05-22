@@ -1,93 +1,161 @@
 .login-container {
-    display: flex;
-    height: 100vh;
-    font-family: 'Arial', sans-serif;
+  display: flex;
+  height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.login-left {
+  flex: 1;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-image {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.login-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.login-form {
+  width: 70%;
+  max-width: 400px;
+}
+
+.login-form h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.login-form p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #DB4444;
+}
+
+.forgot-link {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 13px;
+  color: #DB4444;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #DB4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #c23333;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 15px;
+  padding: 8px;
+  background-color: rgba(211, 47, 47, 0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.success-message {
+  color: #388e3c;
+  font-size: 14px;
+  margin-top: 15px;
+  padding: 8px;
+  background-color: rgba(56, 142, 60, 0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.register-section {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.register-section p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.register-section a {
+  color: #DB4444;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-section a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
   }
   
-  .login-left {
-    flex: 1;
-    background-color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .login-image {
-    max-width: 80%;
-    max-height: 80%;
-    object-fit: contain;
-  }
-  
-  .login-right {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
+  .login-left, .login-right {
+    flex: none;
+    height: 50vh;
   }
   
   .login-form {
-    width: 70%;
-    max-width: 400px;
-  }
-  
-  .login-form h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .login-form p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .form-group input {
+    padding: 20px;
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
     box-sizing: border-box;
   }
-  
-  .login-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #DB4444;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .login-button:hover {
-    background-color: #c23333;
-  }
-  
-  .forgot-password {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #DB4444;
-    text-decoration: none;
-    font-size: 14px;
-  }
-  
-  .forgot-password:hover {
-    text-decoration: underline;
-  }
+}

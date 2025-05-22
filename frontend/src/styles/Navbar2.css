@@ -22,8 +22,10 @@
 
 .navbar-links {
   display: flex;
-  align-items: center; /* Ensure vertical alignment */
-  gap: 25px; /* Slightly reduced gap for better spacing */
+  align-items: center;
+  /* Ensure vertical alignment */
+  gap: 25px;
+  /* Slightly reduced gap for better spacing */
 }
 
 .nav-link {
@@ -98,6 +100,70 @@
 .search-icon {
   color: #555555;
   font-size: 18px;
+}
+
+
+.profile-container1 {
+  position: relative;
+}
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-icon:hover {
+  background-color: #e0e0e0;
+}
+
+.profile-icon svg {
+  font-size: 18px;
+  color: #555555;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  z-index: 100;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #555555;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f8f8;
+}
+
+.dropdown-icon {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-dropdown {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 /* Responsive adjustments */
