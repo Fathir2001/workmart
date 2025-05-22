@@ -89,8 +89,8 @@ router.get('/users', verifyAdmin, async (req, res) => {
 // Create a new user
 router.post('/users', verifyAdmin, async (req, res) => {
   try {
-    const { name, email, password, isAdmin } = req.body;
-    const user = await User.create({ name, email, password, isAdmin });
+    const { name, email, password, isAdmin, location } = req.body;
+    const user = await User.create({ name, email, password, isAdmin, location });
     res.status(201).json(user);
   } catch (err) {
     console.error('Error creating user:', err.message);
@@ -101,10 +101,10 @@ router.post('/users', verifyAdmin, async (req, res) => {
 // Update a user
 router.put('/users/:id', verifyAdmin, async (req, res) => {
   try {
-    const { name, email, isAdmin } = req.body;
+    const { name, email, isAdmin, location } = req.body;
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      { name, email, isAdmin },
+      { name, email, isAdmin, location },
       { new: true }
     );
     if (!user) return res.status(404).json({ message: 'User not found' });
