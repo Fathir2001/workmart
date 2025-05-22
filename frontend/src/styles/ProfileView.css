@@ -1,12 +1,12 @@
 .profile-container {
-    display: flex;
-    max-width: 900px;
-    margin: auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+  display: flex;
+  max-width: 900px;
+  margin: 120px auto 40px; /* Increased top margin to create space below navbar */
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
   
   .profile-image-section {
     flex: 1;
