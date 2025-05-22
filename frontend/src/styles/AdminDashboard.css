@@ -54,3 +54,17 @@ input, textarea {
 textarea {
   height: 100px;
 }
+
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+}
