@@ -120,7 +120,7 @@ const Category = ({ onCategorySelect }) => {
                         : 'http://localhost:5000/uploads/profile/profile.png'
                     }
                     alt={provider.name || 'Service Provider'}
-                    className="worker-image"
+                    className="worker-image1"
                     onError={(e) => {
                       console.error(`Failed to load image: ${e.target.src}`);
                       e.target.src = 'http://localhost:5000/uploads/profile/profile.png';
