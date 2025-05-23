@@ -4,6 +4,7 @@ import '../styles/PostJob.css';
 import jobImage from '../Images/different-occupations-young-women 1.png';
 import Footer from '../components/Footer';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const PostJob = () => {
   const navigate = useNavigate();
@@ -20,7 +21,21 @@ const PostJob = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     if (!token || !user) {
-      navigate('/login');
+      // Show Sweet Alert for non-authenticated users
+      Swal.fire({
+        title: 'Authentication Required',
+        text: 'Please login to post a job',
+        icon: 'warning',
+        confirmButtonText: 'Login Now',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        } else {
+          navigate('/work'); // Redirect to work page if they cancel
+        }
+      });
     }
   }, [navigate]);
 
@@ -31,10 +46,19 @@ const PostJob = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     if (!token || !user) {
-      setError('Please log in to post a job');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1500);
+      // Show Sweet Alert for non-authenticated users
+      Swal.fire({
+        title: 'Authentication Required',
+        text: 'Please login to post a job',
+        icon: 'warning',
+        confirmButtonText: 'Login Now',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
       return;
     }
 
@@ -47,7 +71,6 @@ const PostJob = () => {
       formData.append('postedBy', user._id);
       if (image) formData.append('image', image);
 
-      console.log('Authorization Header:', `Bearer ${token}`);
       await axios.post('http://localhost:5000/api/jobs', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -55,8 +78,14 @@ const PostJob = () => {
         },
       });
 
-      setSuccess('Job posted successfully!');
-      setError(null);
+      // Show success message with Sweet Alert
+      Swal.fire({
+        title: 'Success!',
+        text: 'Job posted successfully!',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
 
       // Reset form
       setTitle('');
@@ -71,8 +100,13 @@ const PostJob = () => {
       }, 2000);
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Failed to post job';
-      setError(errorMessage);
-      setSuccess(null);
+      
+      // Show error message with Sweet Alert
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+      });
 
       // Redirect to login if 401 error (no token or invalid token)
       if (err.response?.status === 401) {
@@ -172,9 +206,6 @@ const PostJob = () => {
               </button>
             </div>
           </form>
-
-          {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-          {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}
         </div>
 
         <div className="post-job-image">
