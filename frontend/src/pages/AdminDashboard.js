@@ -10,6 +10,21 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState({
+    users: 1,
+    jobs: 1,
+    contacts: 1,
+    'service-providers': 1
+  });
+  const [totalItems, setTotalItems] = useState({
+    users: 0,
+    jobs: 0,
+    contacts: 0,
+    'service-providers': 0
+  });
+  const itemsPerPage = 5; // Number of items to display per page
+
   const [showModal, setShowModal] = useState({ type: '', action: '', id: null });
   const [formData, setFormData] = useState({});
   const [profilePic, setProfilePic] = useState(null);
@@ -22,17 +37,28 @@ const AdminDashboard = () => {
 
         const config = { headers: { Authorization: `Bearer ${token}` } };
 
+        // Fetch data with pagination parameters
         const [usersRes, jobsRes, contactsRes, serviceProvidersRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/users', config),
-          axios.get('http://localhost:5000/api/admin/jobs', config),
-          axios.get('http://localhost:5000/api/admin/contacts', config),
-          axios.get('http://localhost:5000/api/admin/service-providers', config),
+          axios.get(`http://localhost:5000/api/admin/users?page=${currentPage.users}&limit=${itemsPerPage}`, config),
+          axios.get(`http://localhost:5000/api/admin/jobs?page=${currentPage.jobs}&limit=${itemsPerPage}`, config),
+          axios.get(`http://localhost:5000/api/admin/contacts?page=${currentPage.contacts}&limit=${itemsPerPage}`, config),
+          axios.get(`http://localhost:5000/api/admin/service-providers?page=${currentPage['service-providers']}&limit=${itemsPerPage}`, config),
         ]);
 
-        setUsers(usersRes.data);
-        setJobs(jobsRes.data);
-        setContacts(contactsRes.data);
-        setServiceProviders(serviceProvidersRes.data);
+        // Update state with paginated data
+        setUsers(usersRes.data.items || usersRes.data);
+        setJobs(jobsRes.data.items || jobsRes.data);
+        setContacts(contactsRes.data.items || contactsRes.data);
+        setServiceProviders(serviceProvidersRes.data.items || serviceProvidersRes.data);
+        
+        // Update total items count
+        setTotalItems({
+          users: usersRes.data.total || usersRes.data.length,
+          jobs: jobsRes.data.total || jobsRes.data.length,
+          contacts: contactsRes.data.total || contactsRes.data.length,
+          'service-providers': serviceProvidersRes.data.total || serviceProvidersRes.data.length
+        });
+        
         setError(null);
       } catch (err) {
         setError(err.message || 'Failed to fetch data');
@@ -42,7 +68,52 @@ const AdminDashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentPage]); // Re-fetch when page changes
+
+  // Pagination controls
+  const handlePageChange = (type, page) => {
+    setCurrentPage({
+      ...currentPage,
+      [type]: page
+    });
+  };
+
+  // Generate pagination buttons
+  const renderPagination = (type) => {
+    const totalPages = Math.ceil(totalItems[type] / itemsPerPage);
+    if (totalPages <= 1) return null;
+
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button 
+          key={i} 
+          onClick={() => handlePageChange(type, i)}
+          className={currentPage[type] === i ? 'active' : ''}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <div className="pagination">
+        <button 
+          onClick={() => handlePageChange(type, Math.max(1, currentPage[type] - 1))}
+          disabled={currentPage[type] === 1}
+        >
+          Previous
+        </button>
+        {pageNumbers}
+        <button 
+          onClick={() => handlePageChange(type, Math.min(totalPages, currentPage[type] + 1))}
+          disabled={currentPage[type] === totalPages}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
 
   const handleDelete = async (type, id) => {
     try {
@@ -52,10 +123,9 @@ const AdminDashboard = () => {
       console.log(`Deleting ${type}/${id} at URL: http://localhost:5000/api/admin/${type}/${id}`);
       await axios.delete(`http://localhost:5000/api/admin/${type}/${id}`, config);
 
-      if (type === 'users') setUsers(users.filter((user) => user._id !== id));
-      if (type === 'jobs') setJobs(jobs.filter((job) => job._id !== id));
-      if (type === 'contacts') setContacts(contacts.filter((contact) => contact._id !== id));
-      if (type === 'service-providers') setServiceProviders(serviceProviders.filter((sp) => sp._id !== id));
+      // After deletion, refresh the current page to show accurate data
+      handlePageChange(type, currentPage[type]);
+      
     } catch (err) {
       console.error('Delete error:', err);
       setError(err.response?.data?.message || `Failed to delete ${type}`);
@@ -107,29 +177,21 @@ const AdminDashboard = () => {
 
         config.headers['Content-Type'] = 'multipart/form-data';
 
-        let response;
         if (action === 'create') {
-          response = await axios.post(`http://localhost:5000/api/admin/service-providers`, data, config);
-          setServiceProviders([...serviceProviders, response.data]);
+          await axios.post(`http://localhost:5000/api/admin/service-providers`, data, config);
         } else if (action === 'update') {
-          response = await axios.put(`http://localhost:5000/api/admin/service-providers/${id}`, data, config);
-          setServiceProviders(serviceProviders.map((sp) => (sp._id === id ? response.data : sp)));
+          await axios.put(`http://localhost:5000/api/admin/service-providers/${id}`, data, config);
         }
       } else {
-        let response;
         if (action === 'create') {
-          response = await axios.post(`http://localhost:5000/api/admin/${type}`, formData, config);
-          if (type === 'users') setUsers([...users, response.data]);
-          if (type === 'jobs') setJobs([...jobs, response.data]);
-          if (type === 'contacts') setContacts([...contacts, response.data]);
+          await axios.post(`http://localhost:5000/api/admin/${type}`, formData, config);
         } else if (action === 'update') {
-          response = await axios.put(`http://localhost:5000/api/admin/${type}/${id}`, formData, config);
-          if (type === 'users') setUsers(users.map((user) => (user._id === id ? response.data : user)));
-          if (type === 'jobs') setJobs(jobs.map((job) => (job._id === id ? response.data : job)));
-          if (type === 'contacts') setContacts(contacts.map((contact) => (contact._id === id ? response.data : contact)));
+          await axios.put(`http://localhost:5000/api/admin/${type}/${id}`, formData, config);
         }
       }
 
+      // Refresh the current page after create/update
+      handlePageChange(type, currentPage[type]);
       handleCloseModal();
     } catch (err) {
       setError(err.message || `Failed to ${action} ${type}`);
@@ -180,6 +242,7 @@ const AdminDashboard = () => {
             ))}
           </tbody>
         </table>
+        {renderPagination('users')}
       </section>
 
       {/* Jobs Section */}
@@ -216,6 +279,7 @@ const AdminDashboard = () => {
             ))}
           </tbody>
         </table>
+        {renderPagination('jobs')}
       </section>
 
       {/* Contacts Section */}
@@ -253,6 +317,7 @@ const AdminDashboard = () => {
             ))}
           </tbody>
         </table>
+        {renderPagination('contacts')}
       </section>
 
       {/* Service Providers Section */}
@@ -312,6 +377,7 @@ const AdminDashboard = () => {
             ))}
           </tbody>
         </table>
+        {renderPagination('service-providers')}
       </section>
 
       {/* Modal for Create/Update */}

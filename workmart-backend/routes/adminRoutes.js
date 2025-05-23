@@ -51,11 +51,25 @@ const upload = multer({
 // Protect all routes with verifyAdmin middleware
 router.use(verifyAdmin);
 
-// Get all users
-router.get('/users', async (req, res) => {
+// Get all users with pagination
+router.get('/users', verifyAdmin, async (req, res) => {
   try {
-    const users = await User.find().select('-password');
-    res.json(users);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    
+    const total = await User.countDocuments();
+    const users = await User.find()
+      .select('-password')
+      .skip(skip)
+      .limit(limit);
+    
+    res.json({
+      items: users,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
