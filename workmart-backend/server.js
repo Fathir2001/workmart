@@ -14,6 +14,9 @@ const User = require('./models/User'); // Updated to match directory and file na
 // Add the verify admin middleware
 const { verifyAdmin } = require('./middleware/auth');
 
+// Add this line
+const publicRoutes = require('./routes/publicRoutes');
+
 const app = express();
 
 // Middleware
@@ -53,6 +56,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/admin', adminRoutes);  // This line must be present
 app.use('/api/auth', authRoutes);
+app.use('/api/public', publicRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Basic Route

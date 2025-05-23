@@ -46,8 +46,8 @@ const Category = ({ onCategorySelect }) => {
         setLoading(true);
         setError(null);
 
-        const backendCategory = categoryMap[selectedCategory];
-        const url = `http://localhost:5000/api/admin/public-service-providers?category=${encodeURIComponent(backendCategory)}`;
+        // Update URL to use a public endpoint instead of admin endpoint
+        const url = `http://localhost:5000/api/public/service-providers?category=${encodeURIComponent(selectedCategory)}`;
         console.log('Fetching service providers from:', url);
 
         const response = await axios.get(url);
@@ -57,16 +57,16 @@ const Category = ({ onCategorySelect }) => {
         }
 
         setServiceProviders(response.data);
-        setLoading(false);
       } catch (err) {
         console.error('Fetch error:', err);
         setError(err.response ? `${err.response.status}: ${err.response.data.message || err.message}` : err.message);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchServiceProviders();
-  }, [selectedCategory, categoryMap]);
+  }, [selectedCategory]);
 
   const handleCategorySelect = (categoryValue) => {
     setSelectedCategory(categoryValue);

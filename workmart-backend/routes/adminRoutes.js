@@ -316,20 +316,4 @@ router.put('/service-providers/:id', upload.single('profilePic'), async (req, re
   }
 });
 
-// Get all service providers (Public endpoint) with optional category filter
-router.get('/public-service-providers', async (req, res) => {
-  try {
-    const { category } = req.query;
-
-    const query = category
-      ? { category: { $regex: `^${category}$`, $options: 'i' } } // Case-insensitive match
-      : {};
-    const serviceProviders = await ServiceProvider.find(query);
-    res.json(serviceProviders);
-  } catch (err) {
-    console.error('Error fetching service providers (public):', err.message);
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
-
 module.exports = router;
