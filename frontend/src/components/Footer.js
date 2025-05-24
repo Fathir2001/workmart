@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebookF, FaLinkedinIn, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaFacebookF, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
 import '../styles/Footer.css';
 
 
@@ -42,17 +42,17 @@ const Footer = () => {
 
           <div className="footer-social-group">
             <div className="footer-social">
-              <a href="#" className="social-icon"><FaFacebookF /></a>
-              <a href="#" className="social-icon"><FaLinkedinIn /></a>
-              <a href="#" className="social-icon"><FaTwitter /></a>
-              <a href="#" className="social-icon"><FaInstagram /></a>
+              <a href="https://www.facebook.com/mohamed.asnaf.147723" className="social-icon"><FaFacebookF /></a>
+              <a href="https://www.linkedin.com/in/mohamed-asnaf-621b852a1/" className="social-icon"><FaLinkedinIn /></a>
+              {/* <a href="#" className="social-icon"><FaTwitter /></a> */}
+              <a href="https://www.instagram.com/itz_asnaf/" className="social-icon"><FaInstagram /></a>
             </div>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>© Copyright Rimal 2022. All right reserved</p>
+        <p>© Copyright Asnaf_2025. All right reserved</p>
       </div>
     </footer>
   );
