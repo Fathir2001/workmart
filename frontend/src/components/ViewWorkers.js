@@ -76,7 +76,8 @@ const ViewWorkers = () => {
         setLoading(true);
         setError(null);
 
-        const url = 'http://localhost:5000/api/admin/public-service-providers';
+        // Use the public endpoint instead of the admin endpoint
+        const url = 'http://localhost:5000/api/public/service-providers';
         console.log('Fetching all service providers from:', url);
         
         const response = await axios.get(url);
