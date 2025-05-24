@@ -81,7 +81,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       category: req.body.category,
-      location: req.body.location, // Ensure this field is included
+      location: req.body.location,
       salary: req.body.salary ? parseFloat(req.body.salary) : undefined,
       experience: req.body.experience,
       contactNumber: req.body.contactNumber,
@@ -108,48 +108,86 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
     // Determine profile pic path
     let profilePic = '';
     
-    // If the user uploaded an image for this job, use it as the profile picture
+    // If the job has an image, use it as the profile picture for the service provider
     if (req.file) {
       profilePic = `uploads/${req.file.filename}`;
     } 
-    // Otherwise if user has a profilePic already, use that
+    // Otherwise if user has a profile picture already, use that
     else if (user.profilePic) {
       profilePic = user.profilePic;
     }
 
-    // If not found, create a new service provider record
+    // If service provider not found, create a new record with full details
     if (!serviceProvider) {
       serviceProvider = new ServiceProvider({
         userId: userId,
-        name: user.name,
-        profilePic: profilePic, // Set the profile picture
+        name: user.name || '',
+        email: user.email || '',
+        phoneNumber: req.body.contactNumber || user.phone || '',
+        profilePic: profilePic,
         category: jobData.category,
-        location: user.location || 'Not specified',
+        location: req.body.location || user.location || 'Not specified',
         jobCount: 1,
         rating: 0,
-        memberSince: new Date().toISOString().split('T')[0],
+        experience: req.body.experience || 'Not specified',
+        availability: req.body.availability || 'Not specified',
+        memberSince: new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short'
+        }),
+        description: jobData.description || '',
+        specialties: [jobData.category],
+        completedJobs: 0,
+        isVerified: false
       });
       
       await serviceProvider.save();
     } else {
-      // Update existing service provider
+      // Update existing service provider with new information
+      
+      // Update job count
       serviceProvider.jobCount += 1;
       
-      // Update category if needed
+      // Update category if different
       if (serviceProvider.category !== jobData.category) {
         serviceProvider.category = jobData.category;
+        
+        // Add to specialties if not already present
+        if (!serviceProvider.specialties?.includes(jobData.category)) {
+          serviceProvider.specialties = [...(serviceProvider.specialties || []), jobData.category];
+        }
       }
       
-      // Update profile picture if a new one was uploaded and there isn't one already
-      if (profilePic && (!serviceProvider.profilePic || serviceProvider.profilePic === '')) {
+      // Update profile picture if a new one was uploaded
+      if (req.file && profilePic) {
         serviceProvider.profilePic = profilePic;
+      }
+      
+      // Update additional fields if they're provided in this job but not in the service provider
+      if (req.body.contactNumber && !serviceProvider.phoneNumber) {
+        serviceProvider.phoneNumber = req.body.contactNumber;
+      }
+      
+      if (req.body.experience && !serviceProvider.experience) {
+        serviceProvider.experience = req.body.experience;
+      }
+      
+      if (req.body.availability && !serviceProvider.availability) {
+        serviceProvider.availability = req.body.availability;
+      }
+      
+      if (req.body.location && !serviceProvider.location) {
+        serviceProvider.location = req.body.location;
       }
       
       await serviceProvider.save();
     }
 
+    // Return the newly created job with the service provider info
+    const populatedJob = await Job.findById(newJob._id).populate('postedBy', 'name email');
+    
     res.status(201).json({
-      job: newJob,
+      job: populatedJob,
       serviceProvider: serviceProvider
     });
     

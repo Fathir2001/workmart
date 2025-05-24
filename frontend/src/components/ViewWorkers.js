@@ -25,7 +25,7 @@ const ViewWorkers = () => {
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [providersPerPage] = useState(8); // Show 8 providers per page
+  const [providersPerPage] = useState(4); // Changed from 8 to 4 providers per page
   const [filteredProviders, setFilteredProviders] = useState([]);
 
   const bannerImages = [

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const serviceProviderSchema = new mongoose.Schema({
-  // Add this field to link to User
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -10,6 +9,14 @@ const serviceProviderSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    trim: true,
+  },
+  phoneNumber: {
+    type: String,
     trim: true,
   },
   profilePic: {
@@ -28,15 +35,39 @@ const serviceProviderSchema = new mongoose.Schema({
   },
   jobCount: {
     type: Number,
-    default: 0, // Add jobCount field
+    default: 0,
+  },
+  completedJobs: {
+    type: Number,
+    default: 0,
   },
   rating: {
     type: Number,
-    default: 0, // Add rating field (0 to 5)
+    default: 0,
+  },
+  experience: {
+    type: String,
+    default: '',
+  },
+  availability: {
+    type: String,
+    default: '',
+  },
+  description: {
+    type: String,
+    default: '',
+  },
+  specialties: {
+    type: [String],
+    default: [],
   },
   memberSince: {
     type: String,
-    default: '', // e.g., "Jun 2019"
+    default: '',
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,

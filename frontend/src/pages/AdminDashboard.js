@@ -166,20 +166,26 @@ const AdminDashboard = () => {
       if (type === 'service-providers') {
         const data = new FormData();
         data.append('name', formData.name || '');
+        data.append('email', formData.email || '');
+        data.append('phoneNumber', formData.phoneNumber || '');
         data.append('category', formData.category || '');
         data.append('location', formData.location || '');
         data.append('jobCount', formData.jobCount || '0');
+        data.append('completedJobs', formData.completedJobs || '0');
         data.append('rating', formData.rating || '0');
+        data.append('experience', formData.experience || '');
+        data.append('availability', formData.availability || '');
+        data.append('description', formData.description || '');
         data.append('memberSince', formData.memberSince || '');
+        data.append('isVerified', formData.isVerified || false);
+        
         if (profilePic) {
           data.append('profilePic', profilePic);
         }
 
-        config.headers['Content-Type'] = 'multipart/form-data';
-
         if (action === 'create') {
-          await axios.post(`http://localhost:5000/api/admin/service-providers`, data, config);
-        } else if (action === 'update') {
+          await axios.post('http://localhost:5000/api/admin/service-providers', data, config);
+        } else {
           await axios.put(`http://localhost:5000/api/admin/service-providers/${id}`, data, config);
         }
       } else {
@@ -333,7 +339,9 @@ const AdminDashboard = () => {
               <th>Profile Picture</th>
               <th>Category</th>
               <th>Location</th>
-              <th>Job Count</th>
+              <th>Experience</th>
+              <th>Contact</th>
+              <th>Jobs</th>
               <th>Rating</th>
               <th>Member Since</th>
               <th>Actions</th>
@@ -357,17 +365,28 @@ const AdminDashboard = () => {
                 </td>
                 <td>{sp.category}</td>
                 <td>{sp.location}</td>
-                <td>{sp.jobCount}</td>
-                <td>{sp.rating}</td>
+                <td>{sp.experience || 'Not specified'}</td>
+                <td>{sp.phoneNumber || 'Not provided'}</td>
+                <td>
+                  {sp.jobCount || 0} ({sp.completedJobs || 0} completed)
+                </td>
+                <td>{sp.rating || 0}/5</td>
                 <td>{sp.memberSince || 'N/A'}</td>
                 <td>
                   <button onClick={() => handleOpenModal('service-providers', 'update', sp._id, {
                     name: sp.name,
+                    email: sp.email,
+                    phoneNumber: sp.phoneNumber,
                     category: sp.category,
                     location: sp.location,
                     jobCount: sp.jobCount,
+                    completedJobs: sp.completedJobs,
                     rating: sp.rating,
+                    experience: sp.experience,
+                    availability: sp.availability,
+                    description: sp.description,
                     memberSince: sp.memberSince,
+                    isVerified: sp.isVerified,
                   })}>
                     Edit
                   </button>
@@ -502,6 +521,27 @@ const AdminDashboard = () => {
                       required
                     />
                   </div>
+                  
+                  <div>
+                    <label>Email:</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email || ''}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label>Phone Number:</label>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber || ''}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  
                   <div>
                     <label>Profile Picture:</label>
                     <input
@@ -511,6 +551,7 @@ const AdminDashboard = () => {
                       onChange={handleFileChange}
                     />
                   </div>
+                  
                   <div>
                     <label>Category:</label>
                     <select
@@ -527,8 +568,15 @@ const AdminDashboard = () => {
                       <option value="Plumbing">Plumbing</option>
                       <option value="Iron Works">Iron Works</option>
                       <option value="Wood Works">Wood Works</option>
+                      <option value="Constructions">Constructions</option>
+                      <option value="Electronic Repairs">Electronic Repairs</option>
+                      <option value="Glass & Aluminium">Glass & Aluminium</option>
+                      <option value="Masonry">Masonry</option>
+                      <option value="Odd Jobs">Odd Jobs</option>
+                      <option value="Vehicles">Vehicles</option>
                     </select>
                   </div>
+                  
                   <div>
                     <label>Location:</label>
                     <select
@@ -565,15 +613,68 @@ const AdminDashboard = () => {
                       <option value="Kegalle">Kegalle</option>
                     </select>
                   </div>
+                  
+                  <div>
+                    <label>Experience Level:</label>
+                    <select
+                      name="experience"
+                      value={formData.experience || ''}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select experience level</option>
+                      <option value="Entry">Entry Level</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Expert">Expert</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label>Availability:</label>
+                    <select
+                      name="availability"
+                      value={formData.availability || ''}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select availability</option>
+                      <option value="Full-time">Full-time</option>
+                      <option value="Part-time">Part-time</option>
+                      <option value="Weekends">Weekends only</option>
+                      <option value="Flexible">Flexible hours</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label>Description:</label>
+                    <textarea
+                      name="description"
+                      value={formData.description || ''}
+                      onChange={handleInputChange}
+                      placeholder="Service provider description"
+                    />
+                  </div>
+                  
                   <div>
                     <label>Job Count:</label>
                     <input
                       type="number"
                       name="jobCount"
-                      value={formData.jobCount || ''}
+                      min="0"
+                      value={formData.jobCount || '0'}
                       onChange={handleInputChange}
                     />
                   </div>
+                  
+                  <div>
+                    <label>Completed Jobs:</label>
+                    <input
+                      type="number"
+                      name="completedJobs"
+                      min="0"
+                      value={formData.completedJobs || '0'}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  
                   <div>
                     <label>Rating (0-5):</label>
                     <input
@@ -582,10 +683,11 @@ const AdminDashboard = () => {
                       min="0"
                       max="5"
                       step="0.1"
-                      value={formData.rating || ''}
+                      value={formData.rating || '0'}
                       onChange={handleInputChange}
                     />
                   </div>
+                  
                   <div>
                     <label>Member Since (e.g., Jun 2019):</label>
                     <input
@@ -593,6 +695,16 @@ const AdminDashboard = () => {
                       name="memberSince"
                       value={formData.memberSince || ''}
                       onChange={handleInputChange}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label>Is Verified:</label>
+                    <input
+                      type="checkbox"
+                      name="isVerified"
+                      checked={formData.isVerified || false}
+                      onChange={handleCheckboxChange}
                     />
                   </div>
                 </>

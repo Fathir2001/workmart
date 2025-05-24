@@ -9,6 +9,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { verifyAdmin } = require('../middleware/auth');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
@@ -252,7 +253,11 @@ router.get('/service-providers', async (req, res) => {
 // Create a new service provider (Admin only) with file upload
 router.post('/service-providers', upload.single('profilePic'), async (req, res) => {
   try {
-    const { name, category, location, jobCount, rating, memberSince } = req.body;
+    const { 
+      name, category, location, jobCount, completedJobs, rating, 
+      experience, availability, description, memberSince, isVerified,
+      email, phoneNumber
+    } = req.body;
 
     if (!name || !category || !location) {
       return res.status(400).json({ message: 'Name, category, and location are required' });
@@ -263,14 +268,44 @@ router.post('/service-providers', upload.single('profilePic'), async (req, res) 
       profilePicPath = `uploads/profile/${req.file.filename}`;
     }
 
+    // Create user if not provided
+    let userId;
+    if (!req.body.userId) {
+      const existingUser = email ? await User.findOne({ email }) : null;
+      
+      if (existingUser) {
+        userId = existingUser._id;
+      } else {
+        // Create a temporary user for this service provider
+        const newUser = new User({
+          name,
+          email: email || `${name.replace(/\s+/g, '').toLowerCase()}@workmart.com`,
+          password: await bcrypt.hash('tempPassword123', 10),
+          isAdmin: false
+        });
+        const savedUser = await newUser.save();
+        userId = savedUser._id;
+      }
+    } else {
+      userId = req.body.userId;
+    }
+
     const serviceProvider = await ServiceProvider.create({
+      userId,
       name,
+      email,
+      phoneNumber,
       profilePic: profilePicPath,
       category,
       location,
       jobCount: Number(jobCount) || 0,
+      completedJobs: Number(completedJobs) || 0,
       rating: Number(rating) || 0,
+      experience,
+      availability,
+      description,
       memberSince: memberSince || '',
+      isVerified: isVerified === 'true' || isVerified === true,
     });
 
     res.status(201).json(serviceProvider);
@@ -283,7 +318,11 @@ router.post('/service-providers', upload.single('profilePic'), async (req, res) 
 // Update a service provider (Admin only)
 router.put('/service-providers/:id', upload.single('profilePic'), async (req, res) => {
   try {
-    const { name, category, location, jobCount, rating, memberSince } = req.body;
+    const { 
+      name, category, location, jobCount, completedJobs, rating, 
+      experience, availability, description, memberSince, isVerified,
+      email, phoneNumber
+    } = req.body;
 
     if (!name || !category || !location) {
       return res.status(400).json({ message: 'Name, category, and location are required' });
@@ -291,11 +330,18 @@ router.put('/service-providers/:id', upload.single('profilePic'), async (req, re
 
     let updateData = {
       name,
+      email,
+      phoneNumber,
       category,
       location,
       jobCount: Number(jobCount) || 0,
+      completedJobs: Number(completedJobs) || 0,
       rating: Number(rating) || 0,
+      experience,
+      availability,
+      description,
       memberSince: memberSince || '',
+      isVerified: isVerified === 'true' || isVerified === true,
     };
 
     if (req.file) {
@@ -308,7 +354,10 @@ router.put('/service-providers/:id', upload.single('profilePic'), async (req, re
       { new: true }
     );
 
-    if (!serviceProvider) return res.status(404).json({ message: 'Service provider not found' });
+    if (!serviceProvider) {
+      return res.status(404).json({ message: 'Service provider not found' });
+    }
+
     res.json(serviceProvider);
   } catch (err) {
     console.error('Error updating service provider:', err.message);
