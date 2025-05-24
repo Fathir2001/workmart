@@ -139,7 +139,7 @@ const PostJob = () => {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Plumber required to fix a pressure pump"
+                placeholder="e.g., I can fix pressure pumps"
                 required
               />
             </div>
@@ -149,7 +149,7 @@ const PostJob = () => {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g., Professional plumber required to fix a pressure pump for a bathroom"
+                placeholder="e.g., Experienced plumber offering bathroom pressure pump repair services."
                 required
               />
             </div>
