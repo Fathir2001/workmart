@@ -92,8 +92,15 @@ const Payment = () => {
           throw new Error('Expected an array of jobs, but received: ' + JSON.stringify(data));
         }
 
-        setAllJobs(data);
-        setJobs(data); // Initially display all jobs
+        // Process each job to ensure postedBy is handled properly
+        const processedJobs = data.map(job => {
+          // Log job details to help debug the user information
+          console.log(`Job ${job._id} posted by:`, job.postedBy);
+          return job;
+        });
+
+        setAllJobs(processedJobs);
+        setJobs(processedJobs); // Initially display all jobs
         setLoading(false);
       } catch (err) {
         console.error('Fetch error:', err);
@@ -242,7 +249,7 @@ const Payment = () => {
                     </div>
                     <p className="job-description">{job.description}</p>
                     <p className="job-posted-at">
-                      Posted by {job.postedBy?.name || 'Unknown User'} on {new Date(job.createdAt).toLocaleDateString()}
+                      Posted by {job.postedBy?.name || job.postedBy?.email || 'Unknown User'} on {new Date(job.createdAt).toLocaleDateString()}
                     </p>
                     <div className="job-actions">
                       <button className="action-btn" aria-label="View job">

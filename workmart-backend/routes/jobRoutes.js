@@ -53,11 +53,14 @@ const auth = (req, res, next) => {
 // Get all jobs
 router.get('/', async (req, res) => {
   try {
-    const jobs = await Job.find().populate('postedBy', 'username email');
+    const jobs = await Job.find()
+      .populate('postedBy', 'name email')  // Populate the postedBy field with user name and email
+      .sort({ createdAt: -1 });            // Sort by most recent first
+    
     res.json(jobs);
   } catch (err) {
     console.error('Error fetching jobs:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
