@@ -20,7 +20,8 @@ const Contacts = () => {
       const response = await axios.post('http://localhost:5000/api/contacts', {
         name,
         email,
-        message: `${message} (Phone: ${phone})`,
+        phone,  // Send phone as a separate field
+        message,
       }, {
         headers: { 'Content-Type': 'application/json' },
       });
