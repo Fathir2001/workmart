@@ -114,7 +114,7 @@
 /* Worker cards styling */
 .hire-workers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Ensures 3 per row maximum */
   gap: 15px;
   margin-top: 20px;
 }
@@ -467,6 +467,10 @@
   .hire-jobs-container, .hire-workers-container {
     max-height: 650px;
   }
+  
+  .hire-workers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -482,6 +486,12 @@
   .hire-workers-grid, .hire-jobs-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hire-workers-grid {
+    grid-template-columns: 1fr;
   }
 }
 
