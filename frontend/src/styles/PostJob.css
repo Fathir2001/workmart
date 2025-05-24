@@ -42,15 +42,37 @@
   box-sizing: border-box;
 }
 
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
 .form-group textarea {
   height: 100px;
   resize: vertical;
 }
 
-.form-group select {
-  appearance: none;
-  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMTZsLTcgN2gtN3Y0aDE0di00eiIvPjwvc3ZnPg==') no-repeat right 10px center;
-  background-size: 12px;
+.image-preview {
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+/* Style for rating selection */
+.rating-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rating-selector svg {
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .form-buttons {
@@ -98,4 +120,21 @@
 .job-image {
   max-width: 100%;
   height: auto;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .post-job-container {
+    flex-direction: column;
+  }
+  
+  .post-job-form,
+  .post-job-image {
+    width: 100%;
+  }
+  
+  .post-job-image {
+    order: -1;
+    margin-bottom: 20px;
+  }
 }

@@ -66,15 +66,28 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
     const userId = req.userId;
     
+    // Validate required fields
+    if (!req.body.title || !req.body.description || !req.body.category || !req.body.location) {
+      return res.status(400).json({ 
+        message: 'Missing required fields. Title, description, category, and location are required.' 
+      });
+    }
+    
     // Create job data
     const jobData = {
       title: req.body.title,
       description: req.body.description,
       category: req.body.category,
+      location: req.body.location, // Ensure this field is included
       salary: req.body.salary ? parseFloat(req.body.salary) : undefined,
+      experience: req.body.experience,
+      contactNumber: req.body.contactNumber,
+      availability: req.body.availability,
       postedBy: userId,
-      image: req.file ? `uploads/${req.file.filename}` : undefined, // Notice I removed the leading slash
+      image: req.file ? `uploads/${req.file.filename}` : undefined,
     };
+    
+    console.log("Creating job with data:", jobData);
 
     // Create the job
     const job = new Job(jobData);
