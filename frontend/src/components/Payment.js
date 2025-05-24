@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMoneyBillWave, FaTag, FaEye, FaComment, FaShare } from 'react-icons/fa';
+import { FaMoneyBillWave, FaTag, FaEye } from 'react-icons/fa';
 import SideBar from './SideBar';
 import '../styles/Payment.css';
 
@@ -219,12 +219,12 @@ const Payment = () => {
                       <button className="action-btn" aria-label="View job">
                         <FaEye /> View (0)
                       </button>
-                      <button className="action-btn" aria-label="Comment on job">
+                      {/* <button className="action-btn" aria-label="Comment on job">
                         <FaComment /> Comment (0)
                       </button>
                       <button className="action-btn" aria-label="Share job">
                         <FaShare /> Share (0)
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
