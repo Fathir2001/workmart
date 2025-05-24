@@ -90,31 +90,39 @@ router.post('/:id/rate', async (req, res) => {
       return res.status(400).json({ message: 'Rating must be between 1 and 5' });
     }
 
-    // If the user has already submitted a rating, update it instead of adding a new one
-    const userIdToUse = userId || 'anonymous';
-    const existingRatingIndex = serviceProvider.ratings.findIndex(
-      r => r.userId === userIdToUse
-    );
+    // Generate a unique ID for anonymous users or use the provided userId
+    const userIdToUse = userId || `anonymous_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    console.log(`Using user ID for rating: ${userIdToUse}`);
 
-    if (existingRatingIndex !== -1) {
-      // Update existing rating
-      serviceProvider.ratings[existingRatingIndex].value = rating;
-    } else {
-      // Add new rating
-      serviceProvider.ratings.push({
-        userId: userIdToUse,
-        value: rating
-      });
-    }
+    // Always add a new rating (we don't try to update existing ratings for anonymous users)
+    serviceProvider.ratings.push({
+      userId: userIdToUse,
+      value: rating
+    });
 
     // Calculate new average rating
     serviceProvider.calculateAverageRating();
+    
+    // Print the ratings array for debugging
+    console.log('All ratings after new addition:', serviceProvider.ratings.map(r => r.value));
+    console.log(`Total ratings: ${serviceProvider.ratings.length}, Sum: ${serviceProvider.ratings.reduce((sum, r) => sum + r.value, 0)}`);
+    
     await serviceProvider.save();
 
     console.log(`Rating saved successfully. New average: ${serviceProvider.rating}`);
     res.json({ 
       message: 'Rating submitted successfully', 
-      newRating: serviceProvider.rating 
+      newRating: serviceProvider.rating,
+      ratingsCount: serviceProvider.ratings.length,
+      // Include the breakdown of ratings for UI display
+      ratingsBreakdown: {
+        5: serviceProvider.ratings.filter(r => r.value === 5).length,
+        4: serviceProvider.ratings.filter(r => r.value === 4).length,
+        3: serviceProvider.ratings.filter(r => r.value === 3).length,
+        2: serviceProvider.ratings.filter(r => r.value === 2).length,
+        1: serviceProvider.ratings.filter(r => r.value === 1).length
+      }
     });
   } catch (err) {
     console.error('Error in rating submission:', err);

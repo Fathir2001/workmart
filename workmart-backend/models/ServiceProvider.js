@@ -105,6 +105,8 @@ serviceProviderSchema.methods.calculateAverageRating = function() {
   
   const sum = this.ratings.reduce((total, rating) => total + rating.value, 0);
   this.rating = Math.round((sum / this.ratings.length) * 10) / 10; // Round to 1 decimal place
+  
+  console.log(`Calculated average: ${this.rating} from ${this.ratings.length} ratings with sum ${sum}`);
 };
 
 module.exports = mongoose.model('ServiceProvider', serviceProviderSchema);

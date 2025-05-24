@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes, FaMapMarkerAlt, FaTag, FaPhone, FaEnvelope, FaStar, FaBriefcase, FaCalendarAlt, FaCheck, FaUserClock } from 'react-icons/fa';
 import axios from 'axios';
 import '../styles/DetailsModal.css';
@@ -8,7 +8,16 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
   const [hoverRating, setHoverRating] = useState(0);
   const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
   const [currentRating, setCurrentRating] = useState(provider?.rating || 0);
+  const [ratingCount, setRatingCount] = useState(provider?.ratings?.length || 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Update currentRating and ratingCount when provider changes
+  useEffect(() => {
+    if (provider) {
+      setCurrentRating(provider.rating || 0);
+      setRatingCount(provider.ratings?.length || 0);
+    }
+  }, [provider]);
   
   if (!provider) return null;
 
@@ -23,8 +32,19 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
     setIsSubmitting(true);
     
     try {
-      // Get current user ID from localStorage if available
-      const userId = localStorage.getItem('userId') || null;
+      // Get current user ID from localStorage if available, or generate a session ID
+      let userId = localStorage.getItem('userId');
+      
+      // If no userId exists, create a session ID for anonymous users
+      if (!userId) {
+        // Check if we already have an anonymous ID
+        userId = localStorage.getItem('anonymousUserId');
+        if (!userId) {
+          // Generate a new anonymous ID
+          userId = `anonymous_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          localStorage.setItem('anonymousUserId', userId);
+        }
+      }
       
       // Log the request details for debugging
       console.log('Sending rating request to:', `http://localhost:5000/api/providers/${provider._id}/rate`);
@@ -40,6 +60,7 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
       
       // Update the displayed rating with the new average from server
       setCurrentRating(response.data.newRating);
+      setRatingCount(response.data.ratingsCount);
       setIsRatingSubmitted(true);
       setTimeout(() => setIsRatingSubmitted(false), 3000);
     } catch (error) {
@@ -73,7 +94,8 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
           style={{ 
             color: isInteractive 
               ? (starValue <= (hoverRating || userRating) ? '#f1c40f' : '#ddd')
-              : (starValue <= currentRating ? '#f1c40f' : '#ddd')
+              : (starValue <= Math.round(currentRating) ? '#f1c40f' : 
+                 starValue - 0.5 <= currentRating ? '#f8e187' : '#ddd') // Partial stars for half ratings
           }}
           onMouseEnter={isInteractive ? () => handleRatingHover(starValue) : undefined}
           onMouseLeave={isInteractive ? () => handleRatingHover(0) : undefined}
@@ -117,7 +139,10 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
               <div className="provider-rating-display">
                 <div className="current-rating">
                   {renderStars(false)}
-                  <span className="rating-text">{currentRating}/5</span>
+                  <span className="rating-text">
+                    {currentRating.toFixed(1)}/5 
+                    <span className="rating-count">({ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'})</span>
+                  </span>
                 </div>
               </div>
               <div className="user-rating-section">
