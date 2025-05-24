@@ -180,146 +180,148 @@ const ViewWorkers = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <div className="sidebar-section">
-        <SideBar 
-          onCategorySelect={handleCategorySelect} 
-          selectedCategory={selectedCategory} 
-          availableCategories={categories}
-        />
-      </div>
-
-      <div className="main-content">
-        <div className="banner-container">
-          <img
-            src={bannerImages[currentBannerIndex]}
-            alt="Service Banner"
-            className="service-banner"
-            onError={handleBannerImageError}
+    <div className="hire-workers-container">
+      <div className="dashboard-container">
+        <div className="sidebar-section">
+          <SideBar 
+            onCategorySelect={handleCategorySelect} 
+            selectedCategory={selectedCategory} 
+            availableCategories={categories}
           />
         </div>
 
-        <div className="jobs-section">
-          <div className="category-indicator">
-            <h2>Current Category: {selectedCategory}</h2>
-            <p className="hire-results-count">
-              Showing {serviceProviders.length} of {filteredProviders.length} service providers
-            </p>
+        <div className="main-content">
+          <div className="banner-container">
+            <img
+              src={bannerImages[currentBannerIndex]}
+              alt="Service Banner"
+              className="service-banner"
+              onError={handleBannerImageError}
+            />
           </div>
-          
-          <div className="jobs-container">
-            {loading ? (
-              <p className="status-message">Loading service providers...</p>
-            ) : error ? (
-              <p className="error-message">Error: {error}</p>
-            ) : serviceProviders.length === 0 ? (
-              <p className="status-message">No service providers found in the {selectedCategory} category.</p>
-            ) : (
-              <>
-                <div className="hire-workers-grid">
-                  {serviceProviders.map((provider) => (
-                    <div key={provider._id} className="hire-worker-card">
-                      <div className="hire-worker-image-container">
-                        <img
-                          src={
-                            provider.profilePic
-                              ? provider.profilePic.startsWith('http')
-                                ? provider.profilePic
-                                : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
-                              : 'http://localhost:5000/uploads/profile/profile.png'
-                          }
-                          alt={provider.name || 'Service Provider'}
-                          className="hire-worker-image"
-                          onError={(e) => {
-                            console.error(`Failed to load image: ${e.target.src}`);
-                            e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/150?text=No+Image';
-                          }}
-                        />
-                      </div>
-                      <div className="hire-worker-info">
-                        <h3 className="hire-worker-name">{provider.name}</h3>
-                        <div className="hire-worker-category">
-                          <FaTag className="hire-meta-icon" /> {provider.category}
+
+          <div className="jobs-section">
+            <div className="category-indicator">
+              <h2>Current Category: {selectedCategory}</h2>
+              <p className="hire-results-count">
+                Showing {serviceProviders.length} of {filteredProviders.length} service providers
+              </p>
+            </div>
+            
+            <div className="jobs-container">
+              {loading ? (
+                <p className="status-message">Loading service providers...</p>
+              ) : error ? (
+                <p className="error-message">Error: {error}</p>
+              ) : serviceProviders.length === 0 ? (
+                <p className="status-message">No service providers found in the {selectedCategory} category.</p>
+              ) : (
+                <>
+                  <div className="hire-workers-grid">
+                    {serviceProviders.map((provider) => (
+                      <div key={provider._id} className="hire-worker-card">
+                        <div className="hire-worker-image-container">
+                          <img
+                            src={
+                              provider.profilePic
+                                ? provider.profilePic.startsWith('http')
+                                  ? provider.profilePic
+                                  : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
+                                : 'http://localhost:5000/uploads/profile/profile.png'
+                            }
+                            alt={provider.name || 'Service Provider'}
+                            className="hire-worker-image"
+                            onError={(e) => {
+                              console.error(`Failed to load image: ${e.target.src}`);
+                              e.target.onerror = null;
+                              e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                            }}
+                          />
                         </div>
-                        <div className="hire-worker-location">
-                          <FaMapMarkerAlt className="hire-meta-icon" /> {provider.location || 'Location not specified'}
-                        </div>
-                        <div className="hire-worker-stats">
-                          <div className="hire-worker-rating">
-                            {[...Array(5)].map((_, i) => (
-                              <FaStar
-                                key={i}
-                                className="hire-meta-icon"
-                                style={{ color: i < (provider.rating || 0) ? '#f1c40f' : '#ddd' }}
-                              />
-                            ))}
+                        <div className="hire-worker-info">
+                          <h3 className="hire-worker-name">{provider.name}</h3>
+                          <div className="hire-worker-category">
+                            <FaTag className="hire-meta-icon" /> {provider.category}
                           </div>
-                          <div className="hire-worker-jobs">
-                            Jobs: {provider.jobCount || 0}
+                          <div className="hire-worker-location">
+                            <FaMapMarkerAlt className="hire-meta-icon" /> {provider.location || 'Location not specified'}
+                          </div>
+                          <div className="hire-worker-stats">
+                            <div className="hire-worker-rating">
+                              {[...Array(5)].map((_, i) => (
+                                <FaStar
+                                  key={i}
+                                  className="hire-meta-icon"
+                                  style={{ color: i < (provider.rating || 0) ? '#f1c40f' : '#ddd' }}
+                                />
+                              ))}
+                            </div>
+                            <div className="hire-worker-jobs">
+                              Jobs: {provider.jobCount || 0}
+                            </div>
                           </div>
                         </div>
+                        <div className="hire-worker-actions">
+                          <button className="hire-action-btn" aria-label="View provider">
+                            <FaEye /> View
+                          </button>
+                        </div>
                       </div>
-                      <div className="hire-worker-actions">
-                        <button className="hire-action-btn" aria-label="View provider">
-                          <FaEye /> View
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="hire-pagination">
-                    <button 
-                      onClick={prevPage} 
-                      className="hire-pagination-btn"
-                      disabled={currentPage === 1}
-                    >
-                      <FaChevronLeft /> Prev
-                    </button>
-                    
-                    <div className="hire-pagination-numbers">
-                      {[...Array(totalPages)].map((_, index) => {
-                        // Only show current page, first, last, and a few surrounding pages
-                        const pageNum = index + 1;
-                        if (
-                          pageNum === 1 || 
-                          pageNum === totalPages || 
-                          (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
-                        ) {
-                          return (
-                            <button 
-                              key={pageNum}
-                              onClick={() => paginate(pageNum)}
-                              className={`hire-pagination-num ${currentPage === pageNum ? 'active' : ''}`}
-                            >
-                              {pageNum}
-                            </button>
-                          );
-                        } else if (
-                          (pageNum === currentPage - 2 && currentPage > 3) || 
-                          (pageNum === currentPage + 2 && currentPage < totalPages - 2)
-                        ) {
-                          return <span key={pageNum} className="hire-pagination-ellipsis">...</span>;
-                        } else {
-                          return null;
-                        }
-                      })}
-                    </div>
-                    
-                    <button 
-                      onClick={nextPage} 
-                      className="hire-pagination-btn"
-                      disabled={currentPage === totalPages}
-                    >
-                      Next <FaChevronRight />
-                    </button>
+                    ))}
                   </div>
-                )}
-              </>
-            )}
+                  
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="hire-pagination">
+                      <button 
+                        onClick={prevPage} 
+                        className="hire-pagination-btn"
+                        disabled={currentPage === 1}
+                      >
+                        <FaChevronLeft /> Prev
+                      </button>
+                      
+                      <div className="hire-pagination-numbers">
+                        {[...Array(totalPages)].map((_, index) => {
+                          // Only show current page, first, last, and a few surrounding pages
+                          const pageNum = index + 1;
+                          if (
+                            pageNum === 1 || 
+                            pageNum === totalPages || 
+                            (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                          ) {
+                            return (
+                              <button 
+                                key={pageNum}
+                                onClick={() => paginate(pageNum)}
+                                className={`hire-pagination-num ${currentPage === pageNum ? 'active' : ''}`}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          } else if (
+                            (pageNum === currentPage - 2 && currentPage > 3) || 
+                            (pageNum === currentPage + 2 && currentPage < totalPages - 2)
+                          ) {
+                            return <span key={pageNum} className="hire-pagination-ellipsis">...</span>;
+                          } else {
+                            return null;
+                          }
+                        })}
+                      </div>
+                      
+                      <button 
+                        onClick={nextPage} 
+                        className="hire-pagination-btn"
+                        disabled={currentPage === totalPages}
+                      >
+                        Next <FaChevronRight />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

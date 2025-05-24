@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import "../styles/Category.css";
 
-const Category = ({ onCategorySelect }) => {
+const Category = ({ onCategorySelect, compact }) => {
   const [selectedCategory, setSelectedCategory] = useState('Technicians');
   const [serviceProviders, setServiceProviders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -76,7 +76,7 @@ const Category = ({ onCategorySelect }) => {
   };
 
   return (
-    <div className="category-container">
+    <div className={`hire-category-container ${compact ? 'hire-category-compact' : ''}`}>
       <h4 className="category-title">Categories</h4>
       <div className="header-row">
         <h2 className="category-heading">What do you need to be done?</h2>

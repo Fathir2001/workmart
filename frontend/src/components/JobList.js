@@ -14,6 +14,10 @@ const JobList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [jobsPerPage] = useState(6); // Show 6 jobs per page
 
+  // Show more/less state
+  const [showAll, setShowAll] = useState(false);
+  const initialJobsToShow = 6;
+
   // Fetch jobs on component mount
   useEffect(() => {
     const fetchJobs = async () => {
@@ -131,6 +135,32 @@ const JobList = () => {
             ))}
           </div>
           
+          {/* Show more/less button */}
+          {!showAll && allJobs.length > initialJobsToShow && (
+            <div className="hire-show-more">
+              <button 
+                onClick={() => setShowAll(true)}
+                className="hire-show-more-btn"
+              >
+                Show All Jobs ({allJobs.length})
+              </button>
+            </div>
+          )}
+
+          {showAll && (
+            <div className="hire-show-more">
+              <button 
+                onClick={() => {
+                  setShowAll(false);
+                  setCurrentPage(1);
+                }}
+                className="hire-show-more-btn"
+              >
+                Show Less
+              </button>
+            </div>
+          )}
+
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="hire-pagination">
