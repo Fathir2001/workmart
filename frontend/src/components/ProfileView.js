@@ -48,7 +48,7 @@ const ProfileView = () => {
 
   if (loading) {
     return (
-      <div className="profile-container loading-container">
+      <div className="wm-pv__container wm-pv__container--loading">
         <p>Loading your profile...</p>
       </div>
     );
@@ -56,86 +56,86 @@ const ProfileView = () => {
 
   if (error) {
     return (
-      <div className="profile-container error-container">
-        <p className="error-message">{error}</p>
-        <a href="/login" className="login-link">Go to Login</a>
+      <div className="wm-pv__container wm-pv__container--error">
+        <p className="wm-pv__error-message">{error}</p>
+        <a href="/login" className="wm-pv__login-link">Go to Login</a>
       </div>
     );
   }
 
   if (!userData) {
     return (
-      <div className="profile-container error-container">
+      <div className="wm-pv__container wm-pv__container--error">
         <p>No profile data available</p>
       </div>
     );
   }
 
   return (
-    <div className="profile-container">
-      <div className="profile-image-section">
+    <div className="wm-pv__container">
+      <div className="wm-pv__image-section">
         <img 
           src={userData.profilePic ? `http://localhost:5000/${userData.profilePic}` : defaultProfileImage} 
           alt="Profile" 
-          className="profile-image"
+          className="wm-pv__profile-image"
           onError={(e) => e.target.src = defaultProfileImage}
         />
       </div>
-      <div className="profile-details">
-        <h2 className="profile-name">{userData.name || "User"}</h2>
+      <div className="wm-pv__details">
+        <h2 className="wm-pv__name">{userData.name || "User"}</h2>
         
-        <div className="user-info-section">
-          <div className="user-info-item">
-            <FaEnvelope className="info-icon" />
+        <div className="wm-pv__info-section">
+          <div className="wm-pv__info-item">
+            <FaEnvelope className="wm-pv__info-icon" />
             <span>{userData.email || "No email provided"}</span>
           </div>
           
-          <div className="user-info-item">
-            <FaPhone className="info-icon" />
+          <div className="wm-pv__info-item">
+            <FaPhone className="wm-pv__info-icon" />
             <span>{userData.phone || "No phone number provided"}</span>
           </div>
           
-          <div className="user-info-item">
-            <FaMapMarkerAlt className="info-icon" />
+          <div className="wm-pv__info-item">
+            <FaMapMarkerAlt className="wm-pv__info-icon" />
             <span>{userData.location || "No location provided"}</span>
           </div>
           
-          <div className="user-info-item">
-            <FaUser className="info-icon" />
+          <div className="wm-pv__info-item">
+            <FaUser className="wm-pv__info-icon" />
             <span>{userData.isAdmin ? "Administrator" : "Regular User"}</span>
           </div>
           
-          <div className="user-info-item">
-            <span className="info-label">Member since:</span>
+          <div className="wm-pv__info-item">
+            <span className="wm-pv__info-label">Member since:</span>
             <span>{new Date(userData.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
         
         {userData.isServiceProvider && (
           <>
-            <div className="rating-section">
-              <div className="rating">
+            <div className="wm-pv__rating-section">
+              <div className="wm-pv__rating">
                 {[...Array(5)].map((_, i) => (
                   <FaStar 
                     key={i} 
-                    className="star-icon" 
+                    className="wm-pv__star-icon" 
                     style={{ color: i < (userData.rating || 0) ? 'gold' : 'gray' }}
                   />
                 ))}
-                <span className="reviews">({userData.reviewCount || 0} Reviews)</span>
+                <span className="wm-pv__reviews">({userData.reviewCount || 0} Reviews)</span>
               </div>
-              <p className="description">
+              <p className="wm-pv__description">
                 {userData.description || "No description provided"}
               </p>
             </div>
             
-            <h3 className="registration-title">Registrations:</h3>
-            <div className="registrations">
+            <h3 className="wm-pv__registration-title">Registrations:</h3>
+            <div className="wm-pv__registrations">
               {userData.skills?.length > 0 ? 
                 userData.skills.map((skill, i) => (
-                  <span key={i} className="badge">{skill}</span>
+                  <span key={i} className="wm-pv__badge">{skill}</span>
                 )) : 
-                <span className="no-skills">No skills registered</span>
+                <span className="wm-pv__no-skills">No skills registered</span>
               }
             </div>
           </>

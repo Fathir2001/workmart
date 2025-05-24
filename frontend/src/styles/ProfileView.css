@@ -1,4 +1,4 @@
-.profile-container {
+.wm-pv__container {
   display: flex;
   max-width: 900px;
   margin: 120px auto 40px; /* Increased top margin to create space below navbar */
@@ -8,128 +8,128 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
   
-  .profile-image-section {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .profile-image {
-    width: 250px;
-    height: 250px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  
-  .profile-details {
-    flex: 2;
-    padding: 20px;
-  }
-  
-  .profile-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: black;
-  }
-  
-  .rating-section {
-    margin-bottom: 25px;
-    margin-top: 25px;
-  }
-  
-  .rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .star-icon {
-    color: #f4b400;
-    margin-bottom: 25px;
-  }
-  
-  .reviews {
-    margin-bottom: 25px;
-    font-size: 14px;
-    color: #777;
-  }
-  
-  .description {
-   
-    font-size: 14px;
-    margin-top: 5px;
-    text-align: left;
-  }
-  
-  .registration-title {
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .registrations {
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .badge {
-    background: #ddd;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    text-align: center;
-  }
-  
-  .badge.plumbing {
-    background: #d9534f;
-    color: #fff;
-  }
-  
-  .contact-section {
-    margin-top: 20px;
-  }
-  
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 5px 0;
-  }
-  
-  .icon {
-    color: #555;
-  }
-  
-  .show-number,
-  .chat-link {
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  
-  .show-number:hover,
-  .chat-link:hover {
-    text-decoration: underline;
-  }
+.wm-pv__image-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.loading-container, .error-container {
+.wm-pv__profile-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.wm-pv__details {
+  flex: 2;
+  padding: 20px;
+}
+
+.wm-pv__name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: black;
+}
+
+.wm-pv__rating-section {
+  margin-bottom: 25px;
+  margin-top: 25px;
+}
+
+.wm-pv__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wm-pv__star-icon {
+  color: #f4b400;
+  margin-bottom: 25px;
+}
+
+.wm-pv__reviews {
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #777;
+}
+
+.wm-pv__description {
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.wm-pv__registration-title {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.wm-pv__registrations {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.wm-pv__badge {
+  background: #ddd;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.wm-pv__badge--plumbing {
+  background: #d9534f;
+  color: #fff;
+}
+
+.wm-pv__contact-section {
+  margin-top: 20px;
+}
+
+.wm-pv__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.wm-pv__icon {
+  color: #555;
+}
+
+.wm-pv__show-number,
+.wm-pv__chat-link {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.wm-pv__show-number:hover,
+.wm-pv__chat-link:hover {
+  text-decoration: underline;
+}
+
+.wm-pv__container--loading, 
+.wm-pv__container--error {
   padding: 40px;
   text-align: center;
 }
 
-.error-message {
+.wm-pv__error-message {
   color: #d9534f;
   font-size: 18px;
   margin-bottom: 20px;
 }
 
-.login-link {
+.wm-pv__login-link {
   display: inline-block;
   padding: 10px 20px;
   background-color: #007bff;
@@ -139,35 +139,35 @@
   font-weight: 500;
 }
 
-.login-link:hover {
+.wm-pv__login-link:hover {
   background-color: #0069d9;
 }
 
-.user-info-section {
+.wm-pv__info-section {
   margin: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.user-info-item {
+.wm-pv__info-item {
   display: flex;
   align-items: center;
   gap: 12px;
   font-size: 16px;
 }
 
-.info-icon {
+.wm-pv__info-icon {
   color: #007bff;
   font-size: 18px;
 }
 
-.info-label {
+.wm-pv__info-label {
   font-weight: 600;
   margin-right: 5px;
 }
 
-.no-skills {
+.wm-pv__no-skills {
   color: #777;
   font-style: italic;
 }
