@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../styles/ProfileView.css';
-import { FaStar, FaPhone, FaComments, FaMapMarkerAlt, FaEnvelope, FaUser } from "react-icons/fa";
+import { FaStar, FaPhone, FaComments, FaMapMarkerAlt, FaEnvelope, FaUser, FaToolbox, FaCalendarAlt } from "react-icons/fa";
 import axios from 'axios';
 import defaultProfileImage from "../Images/Frame 611.png";
 
@@ -8,6 +8,7 @@ const ProfileView = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isServiceProvider, setIsServiceProvider] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -20,10 +21,30 @@ const ProfileView = () => {
         }
 
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get('http://localhost:5000/api/users/profile', config);
         
-        console.log('Profile data received:', response.data);
-        setUserData(response.data);
+        // First, get the user's basic profile
+        const userResponse = await axios.get('http://localhost:5000/api/users/profile', config);
+        
+        // Check if this user is also a service provider
+        try {
+          const serviceProviderResponse = await axios.get(`http://localhost:5000/api/users/service-provider-profile`, config);
+          
+          if (serviceProviderResponse.data) {
+            // User is a service provider, use that data
+            setUserData(serviceProviderResponse.data);
+            setIsServiceProvider(true);
+          } else {
+            // User is not a service provider, use regular user data
+            setUserData(userResponse.data);
+            setIsServiceProvider(false);
+          }
+        } catch (spError) {
+          // If there's an error or the user is not a service provider,
+          // fall back to regular user data
+          setUserData(userResponse.data);
+          setIsServiceProvider(false);
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('Error fetching user profile:', err);
@@ -75,7 +96,11 @@ const ProfileView = () => {
     <div className="wm-pv__container">
       <div className="wm-pv__image-section">
         <img 
-          src={userData.profilePic ? `http://localhost:5000/${userData.profilePic}` : defaultProfileImage} 
+          src={
+            isServiceProvider && userData.profilePic 
+              ? `http://localhost:5000/${userData.profilePic}` 
+              : defaultProfileImage
+          } 
           alt="Profile" 
           className="wm-pv__profile-image"
           onError={(e) => e.target.src = defaultProfileImage}
@@ -92,7 +117,7 @@ const ProfileView = () => {
           
           <div className="wm-pv__info-item">
             <FaPhone className="wm-pv__info-icon" />
-            <span>{userData.phone || "No phone number provided"}</span>
+            <span>{userData.phoneNumber || userData.phone || "No phone number provided"}</span>
           </div>
           
           <div className="wm-pv__info-item">
@@ -102,16 +127,25 @@ const ProfileView = () => {
           
           <div className="wm-pv__info-item">
             <FaUser className="wm-pv__info-icon" />
-            <span>{userData.isAdmin ? "Administrator" : "Regular User"}</span>
+            <span>{userData.isAdmin ? "Administrator" : isServiceProvider ? "Service Provider" : "Regular User"}</span>
           </div>
           
-          <div className="wm-pv__info-item">
-            <span className="wm-pv__info-label">Member since:</span>
-            <span>{new Date(userData.createdAt).toLocaleDateString()}</span>
-          </div>
+          {userData.createdAt && (
+            <div className="wm-pv__info-item">
+              <span className="wm-pv__info-label">Member since:</span>
+              <span>{new Date(userData.createdAt).toLocaleDateString()}</span>
+            </div>
+          )}
+          
+          {isServiceProvider && userData.memberSince && (
+            <div className="wm-pv__info-item">
+              <span className="wm-pv__info-label">Service Provider since:</span>
+              <span>{userData.memberSince}</span>
+            </div>
+          )}
         </div>
         
-        {userData.isServiceProvider && (
+        {isServiceProvider && (
           <>
             <div className="wm-pv__rating-section">
               <div className="wm-pv__rating">
@@ -122,22 +156,44 @@ const ProfileView = () => {
                     style={{ color: i < (userData.rating || 0) ? 'gold' : 'gray' }}
                   />
                 ))}
-                <span className="wm-pv__reviews">({userData.reviewCount || 0} Reviews)</span>
+                <span className="wm-pv__reviews">({userData.jobCount || 0} Jobs, {userData.completedJobs || 0} Completed)</span>
               </div>
               <p className="wm-pv__description">
                 {userData.description || "No description provided"}
               </p>
             </div>
             
-            <h3 className="wm-pv__registration-title">Registrations:</h3>
+            <h3 className="wm-pv__registration-title">Category:</h3>
             <div className="wm-pv__registrations">
-              {userData.skills?.length > 0 ? 
-                userData.skills.map((skill, i) => (
-                  <span key={i} className="wm-pv__badge">{skill}</span>
-                )) : 
-                <span className="wm-pv__no-skills">No skills registered</span>
-              }
+              <span className={`wm-pv__badge wm-pv__badge--${userData.category?.toLowerCase()}`}>
+                {userData.category || "Not specified"}
+              </span>
             </div>
+            
+            {userData.specialties?.length > 0 && (
+              <>
+                <h3 className="wm-pv__specialties-title">Specialties:</h3>
+                <div className="wm-pv__registrations">
+                  {userData.specialties.map((specialty, i) => (
+                    <span key={i} className="wm-pv__badge">{specialty}</span>
+                  ))}
+                </div>
+              </>
+            )}
+            
+            {userData.experience && (
+              <div className="wm-pv__info-item">
+                <FaToolbox className="wm-pv__info-icon" />
+                <span><strong>Experience:</strong> {userData.experience}</span>
+              </div>
+            )}
+            
+            {userData.availability && (
+              <div className="wm-pv__info-item">
+                <FaCalendarAlt className="wm-pv__info-icon" />
+                <span><strong>Availability:</strong> {userData.availability}</span>
+              </div>
+            )}
           </>
         )}
       </div>

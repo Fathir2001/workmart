@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const ServiceProvider = require('../models/ServiceProvider'); // Add this import
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { auth } = require('../middleware/auth');
@@ -101,6 +102,29 @@ router.get('/profile', auth, async (req, res) => {
     res.json(user);
   } catch (err) {
     console.error('Error fetching user profile:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get service provider profile for the logged-in user
+router.get('/service-provider-profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Check if this user is a service provider
+    const serviceProvider = await ServiceProvider.findOne({ userId: req.userId });
+    
+    if (!serviceProvider) {
+      return res.status(404).json({ message: 'Service provider profile not found' });
+    }
+    
+    // Return the service provider data
+    res.json(serviceProvider);
+  } catch (err) {
+    console.error('Error fetching service provider profile:', err.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
