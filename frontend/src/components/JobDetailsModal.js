@@ -118,7 +118,7 @@ const JobDetailsModal = ({ job, onClose }) => {
         </div>
         
         <div className="modal-footer">
-          <button className="contact-button">Contact Job Poster</button>
+          {/* <button className="contact-button">Contact Job Poster</button> */}
         </div>
       </div>
     </div>

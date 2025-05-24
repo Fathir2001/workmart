@@ -153,7 +153,7 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
         </div>
         
         <div className="modal-footer">
-          <button className="contact-button">Contact Service Provider</button>
+          {/* <button className="contact-button">Contact Service Provider</button> */}
         </div>
       </div>
     </div>
