@@ -191,6 +191,37 @@ const ViewWorkers = () => {
     setSelectedProvider(null);
   };
 
+  // Handler function for updating ratings
+  const handleRatingUpdate = (providerId, newRating, newRatingsCount) => {
+    console.log(`Updating provider ${providerId} with new rating: ${newRating}`);
+    
+    // Function to update provider in a list
+    const updateProviderInList = (providers) => {
+      return providers.map(provider => {
+        if (provider._id === providerId) {
+          return {
+            ...provider,
+            rating: newRating
+          };
+        }
+        return provider;
+      });
+    };
+    
+    // Update all relevant provider states
+    setAllServiceProviders(prev => updateProviderInList(prev));
+    setFilteredProviders(prev => updateProviderInList(prev));
+    setServiceProviders(prev => updateProviderInList(prev));
+    
+    // If the updated provider is the one being viewed, update that too
+    if (selectedProvider && selectedProvider._id === providerId) {
+      setSelectedProvider(prev => ({
+        ...prev,
+        rating: newRating
+      }));
+    }
+  };
+
   return (
     <div className="hire-workers-container">
       <div className="dashboard-container">
@@ -291,6 +322,7 @@ const ViewWorkers = () => {
                     <ServiceProviderDetailsModal 
                       provider={selectedProvider} 
                       onClose={handleCloseProviderModal}
+                      onRatingUpdate={handleRatingUpdate} // Add this line
                     />
                   )}
                   

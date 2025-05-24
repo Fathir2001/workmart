@@ -68,6 +68,8 @@ router.delete('/:id', auth, verifyAdmin, async (req, res) => {
   }
 });
 
+// Update the rating endpoint
+
 // Add a rating for a service provider (make public - no auth required)
 router.post('/:id/rate', async (req, res) => {
   try {
@@ -78,6 +80,11 @@ router.post('/:id/rate', async (req, res) => {
     console.log('Rating value:', rating);
     console.log('User ID:', userId || 'anonymous');
     
+    // Validate the rating value before proceeding
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+    
     const serviceProvider = await ServiceProvider.findById(req.params.id);
     
     if (!serviceProvider) {
@@ -85,17 +92,12 @@ router.post('/:id/rate', async (req, res) => {
       return res.status(404).json({ message: 'Service provider not found' });
     }
 
-    // Validate rating value
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
-    }
-
     // Generate a unique ID for anonymous users or use the provided userId
     const userIdToUse = userId || `anonymous_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     console.log(`Using user ID for rating: ${userIdToUse}`);
 
-    // Always add a new rating (we don't try to update existing ratings for anonymous users)
+    // Add the rating
     serviceProvider.ratings.push({
       userId: userIdToUse,
       value: rating
@@ -114,15 +116,7 @@ router.post('/:id/rate', async (req, res) => {
     res.json({ 
       message: 'Rating submitted successfully', 
       newRating: serviceProvider.rating,
-      ratingsCount: serviceProvider.ratings.length,
-      // Include the breakdown of ratings for UI display
-      ratingsBreakdown: {
-        5: serviceProvider.ratings.filter(r => r.value === 5).length,
-        4: serviceProvider.ratings.filter(r => r.value === 4).length,
-        3: serviceProvider.ratings.filter(r => r.value === 3).length,
-        2: serviceProvider.ratings.filter(r => r.value === 2).length,
-        1: serviceProvider.ratings.filter(r => r.value === 1).length
-      }
+      ratingsCount: serviceProvider.ratings.length
     });
   } catch (err) {
     console.error('Error in rating submission:', err);

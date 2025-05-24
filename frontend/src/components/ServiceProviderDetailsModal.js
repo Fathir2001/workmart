@@ -3,7 +3,7 @@ import { FaTimes, FaMapMarkerAlt, FaTag, FaPhone, FaEnvelope, FaStar, FaBriefcas
 import axios from 'axios';
 import '../styles/DetailsModal.css';
 
-const ServiceProviderDetailsModal = ({ provider, onClose }) => {
+const ServiceProviderDetailsModal = ({ provider, onClose, onRatingUpdate }) => {
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
@@ -42,14 +42,10 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
         if (!userId) {
           // Generate a new anonymous ID
           userId = `anonymous_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          // Store it for future use
           localStorage.setItem('anonymousUserId', userId);
         }
       }
-      
-      // Log the request details for debugging
-      console.log('Sending rating request to:', `http://localhost:5000/api/providers/${provider._id}/rate`);
-      console.log('Provider ID:', provider._id);
-      console.log('Request payload:', { rating, userId });
       
       const response = await axios.post(
         `http://localhost:5000/api/providers/${provider._id}/rate`,
@@ -58,10 +54,18 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
       
       console.log('Rating response:', response.data);
       
-      // Update the displayed rating with the new average from server
-      setCurrentRating(response.data.newRating);
-      setRatingCount(response.data.ratingsCount);
+      // Update the local state
+      const newRating = response.data.newRating;
+      const ratingsCount = response.data.ratingsCount;
+      
+      setCurrentRating(newRating);
       setIsRatingSubmitted(true);
+      
+      // Call the callback to update the parent component
+      if (onRatingUpdate) {
+        onRatingUpdate(provider._id, newRating, ratingsCount);
+      }
+      
       setTimeout(() => setIsRatingSubmitted(false), 3000);
     } catch (error) {
       console.error('Error submitting rating:', error);

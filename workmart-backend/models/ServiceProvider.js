@@ -21,7 +21,7 @@ const serviceProviderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // Change this from required: true to required: false
   },
   name: {
     type: String,
