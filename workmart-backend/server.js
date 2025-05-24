@@ -59,6 +59,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/providers', require('./routes/routesprovider'));
 app.use('/uploads', express.static('uploads'));
+app.use('/api/admin/messages', require('./routes/adminMessageRoutes'));
 
 // Basic Route
 app.get('/', (req, res) => {

@@ -307,3 +307,49 @@ select:focus {
   flex: 1;
   margin-bottom: 0;
 }
+
+/* Add these styles for the message view */
+.admin-view-message {
+  padding: 10px 0;
+}
+
+.admin-message-detail {
+  margin-bottom: 20px;
+}
+
+.admin-message-detail h3 {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #7f8c8d;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-message-detail p {
+  margin: 0;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.admin-message-content {
+  margin-bottom: 25px;
+}
+
+.admin-message-content h3 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #7f8c8d;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.message-text {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  white-space: pre-line;
+  line-height: 1.6;
+  color: #2c3e50;
+  border: 1px solid #eeeeee;
+  min-height: 100px;
+}
