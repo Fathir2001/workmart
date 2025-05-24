@@ -254,9 +254,9 @@ const AdminDashboard = () => {
       {/* Jobs Section */}
       <section>
         <h2>Jobs</h2>
-        <button onClick={() => handleOpenModal('jobs', 'create')}>
+        {/* <button onClick={() => handleOpenModal('jobs', 'create')}>
           Add Job
-        </button>
+        </button> */}
         <table>
           <thead>
             <tr>
@@ -289,7 +289,7 @@ const AdminDashboard = () => {
       </section>
 
       {/* Contacts Section */}
-      <section>
+      {/* <section>
         <h2>Contact Messages</h2>
         <button onClick={() => handleOpenModal('contacts', 'create')}>
           Add Contact
@@ -324,7 +324,7 @@ const AdminDashboard = () => {
           </tbody>
         </table>
         {renderPagination('contacts')}
-      </section>
+      </section> */}
 
       {/* Service Providers Section */}
       <section>
