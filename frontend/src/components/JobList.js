@@ -3,12 +3,14 @@ import axios from 'axios';
 import { FaMoneyBillWave, FaTag, FaMapMarkerAlt, FaEye, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../styles/Hire.css';
 import fallbackBanner from '../Images/banners/fallback-banner.png';
+import JobDetailsModal from './JobDetailsModal';
 
 const JobList = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allJobs, setAllJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,6 +63,16 @@ const JobList = () => {
   const truncateText = (text, maxLength) => {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
+  // View job details handler
+  const handleViewJobDetails = (job) => {
+    setSelectedJob(job);
+  };
+
+  // Close job details modal
+  const handleCloseModal = () => {
+    setSelectedJob(null);
   };
 
   return (
@@ -122,13 +134,25 @@ const JobList = () => {
                   Posted by {getUserDisplayName(job.postedBy)} on {new Date(job.createdAt).toLocaleDateString()}
                 </p>
                 <div className="hire-job-actions">
-                  <button className="hire-action-btn" aria-label="View job details">
+                  <button 
+                    className="hire-action-btn" 
+                    aria-label="View job details"
+                    onClick={() => handleViewJobDetails(job)}
+                  >
                     <FaEye /> View Details
                   </button>
                 </div>
               </div>
             ))}
           </div>
+          
+          {/* Job Details Modal */}
+          {selectedJob && (
+            <JobDetailsModal 
+              job={selectedJob} 
+              onClose={handleCloseModal} 
+            />
+          )}
           
           {/* Pagination Controls */}
           {totalPages > 1 && (

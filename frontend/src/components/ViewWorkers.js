@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { FaTag, FaMapMarkerAlt, FaEye, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import SideBar from './SideBar';
+import ServiceProviderDetailsModal from './ServiceProviderDetailsModal'; // Import the modal component
 import '../styles/ViewWorkers.css';
 
 // Import banner images
@@ -22,6 +23,7 @@ const ViewWorkers = () => {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [allServiceProviders, setAllServiceProviders] = useState([]);
+  const [selectedProvider, setSelectedProvider] = useState(null); // State for selected provider
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -179,6 +181,16 @@ const ViewWorkers = () => {
     e.target.src = fallbackBanner;
   };
 
+  // Handler function for viewing provider details
+  const handleViewProviderDetails = (provider) => {
+    setSelectedProvider(provider);
+  };
+
+  // Handler to close the modal
+  const handleCloseProviderModal = () => {
+    setSelectedProvider(null);
+  };
+
   return (
     <div className="hire-workers-container">
       <div className="dashboard-container">
@@ -262,13 +274,25 @@ const ViewWorkers = () => {
                           </div>
                         </div>
                         <div className="hire-worker-actions">
-                          <button className="hire-action-btn" aria-label="View provider">
+                          <button 
+                            className="hire-action-btn" 
+                            aria-label="View provider"
+                            onClick={() => handleViewProviderDetails(provider)}
+                          >
                             <FaEye /> View
                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Service Provider Details Modal */}
+                  {selectedProvider && (
+                    <ServiceProviderDetailsModal 
+                      provider={selectedProvider} 
+                      onClose={handleCloseProviderModal}
+                    />
+                  )}
                   
                   {/* Pagination Controls */}
                   {totalPages > 1 && (

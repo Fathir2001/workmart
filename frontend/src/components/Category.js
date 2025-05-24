@@ -12,12 +12,14 @@ import {
   FaStar
 } from "react-icons/fa";
 import "../styles/Category.css";
+import ServiceProviderDetailsModal from './ServiceProviderDetailsModal';
 
 const Category = ({ onCategorySelect, compact }) => {
   const [selectedCategory, setSelectedCategory] = useState('Technicians');
   const [serviceProviders, setServiceProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedProvider, setSelectedProvider] = useState(null);
 
   const categories = [
     { name: "Technicians", icon: <FaTools />, value: "Technicians" },
@@ -75,6 +77,14 @@ const Category = ({ onCategorySelect, compact }) => {
     }
   };
 
+  const handleViewProviderDetails = (provider) => {
+    setSelectedProvider(provider);
+  };
+
+  const handleCloseProviderModal = () => {
+    setSelectedProvider(null);
+  };
+
   return (
     <div className={`hire-category-container ${compact ? 'hire-category-compact' : ''}`}>
       <h4 className="category-title">Categories</h4>
@@ -111,7 +121,11 @@ const Category = ({ onCategorySelect, compact }) => {
         ) : (
           <div className="providers-by-category">
             {serviceProviders.map((provider) => (
-              <div key={provider._id} className="provider-card">
+              <div 
+                key={provider._id} 
+                className="provider-card"
+                onClick={() => handleViewProviderDetails(provider)}
+              >
                 <div className="provider-image-container">
                   <img
                     src={
@@ -157,6 +171,13 @@ const Category = ({ onCategorySelect, compact }) => {
           </div>
         )}
       </div>
+
+      {selectedProvider && (
+        <ServiceProviderDetailsModal 
+          provider={selectedProvider} 
+          onClose={handleCloseProviderModal}
+        />
+      )}
     </div>
   );
 };
