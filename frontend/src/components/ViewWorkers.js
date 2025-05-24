@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FaTag, FaMapMarkerAlt, FaEye, FaStar } from 'react-icons/fa';
+import { FaTag, FaMapMarkerAlt, FaEye, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import SideBar from './SideBar';
 import '../styles/ViewWorkers.css';
 
@@ -21,7 +21,12 @@ const ViewWorkers = () => {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  const [allServiceProviders, setAllServiceProviders] = useState([]); // Store all providers for client-side filtering
+  const [allServiceProviders, setAllServiceProviders] = useState([]);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [providersPerPage] = useState(8); // Show 8 providers per page
+  const [filteredProviders, setFilteredProviders] = useState([]);
 
   const bannerImages = [
     allServices,
@@ -106,27 +111,29 @@ const ViewWorkers = () => {
     setLoading(true);
     
     try {
+      let filtered = [];
+      
       // If "ALL" is selected, show all service providers
       if (selectedCategory === 'ALL') {
-        setServiceProviders(allServiceProviders);
+        filtered = allServiceProviders;
       } else {
-        // Filter providers client-side based on selected category
+        // Filter providers by selected category
         const backendCategory = categoryMap[selectedCategory];
         
-        const filteredProviders = allServiceProviders.filter(provider => {
-          // Check both formats of category to be safe
+        filtered = allServiceProviders.filter(provider => {
           return (
             provider.category === backendCategory || 
             provider.category === selectedCategory ||
-            // Handle potential case differences or format variations
             (provider.category && 
-             (provider.category.toUpperCase() === backendCategory || 
-              provider.category.toUpperCase() === selectedCategory.toUpperCase()))
+              (provider.category.toUpperCase() === backendCategory || 
+               provider.category.toUpperCase() === selectedCategory.toUpperCase()))
           );
         });
-        
-        setServiceProviders(filteredProviders);
       }
+      
+      // Save filtered results and reset to first page
+      setFilteredProviders(filtered);
+      setCurrentPage(1);
     } catch (err) {
       console.error('Filtering error:', err);
       setError(err.message);
@@ -134,6 +141,24 @@ const ViewWorkers = () => {
       setLoading(false);
     }
   }, [selectedCategory, allServiceProviders, categoryMap]);
+
+  // Calculate current providers to display based on pagination
+  useEffect(() => {
+    // Get current providers for this page
+    const indexOfLastProvider = currentPage * providersPerPage;
+    const indexOfFirstProvider = indexOfLastProvider - providersPerPage;
+    const currentProviders = filteredProviders.slice(indexOfFirstProvider, indexOfLastProvider);
+    
+    setServiceProviders(currentProviders);
+  }, [currentPage, filteredProviders, providersPerPage]);
+
+  // Pagination controls
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredProviders.length / providersPerPage);
 
   const handleCategorySelect = (category) => {
     if (categories.includes(category)) {
@@ -177,6 +202,9 @@ const ViewWorkers = () => {
         <div className="jobs-section">
           <div className="category-indicator">
             <h2>Current Category: {selectedCategory}</h2>
+            <p className="hire-results-count">
+              Showing {serviceProviders.length} of {filteredProviders.length} service providers
+            </p>
           </div>
           
           <div className="jobs-container">
@@ -187,69 +215,110 @@ const ViewWorkers = () => {
             ) : serviceProviders.length === 0 ? (
               <p className="status-message">No service providers found in the {selectedCategory} category.</p>
             ) : (
-              <div className="jobs-list">
-                {serviceProviders.map((provider) => (
-                  <div key={provider._id} className="job-item">
-                    <div className="job-image-container">
-                      <img
-                        src={
-                          provider.profilePic
-                            ? provider.profilePic.startsWith('http')
-                              ? provider.profilePic
-                              : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
-                            : 'http://localhost:5000/uploads/profile/profile.png'
+              <>
+                <div className="hire-workers-grid">
+                  {serviceProviders.map((provider) => (
+                    <div key={provider._id} className="hire-worker-card">
+                      <div className="hire-worker-image-container">
+                        <img
+                          src={
+                            provider.profilePic
+                              ? provider.profilePic.startsWith('http')
+                                ? provider.profilePic
+                                : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
+                              : 'http://localhost:5000/uploads/profile/profile.png'
+                          }
+                          alt={provider.name || 'Service Provider'}
+                          className="hire-worker-image"
+                          onError={(e) => {
+                            console.error(`Failed to load image: ${e.target.src}`);
+                            e.target.onerror = null;
+                            e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                          }}
+                        />
+                      </div>
+                      <div className="hire-worker-info">
+                        <h3 className="hire-worker-name">{provider.name}</h3>
+                        <div className="hire-worker-category">
+                          <FaTag className="hire-meta-icon" /> {provider.category}
+                        </div>
+                        <div className="hire-worker-location">
+                          <FaMapMarkerAlt className="hire-meta-icon" /> {provider.location || 'Location not specified'}
+                        </div>
+                        <div className="hire-worker-stats">
+                          <div className="hire-worker-rating">
+                            {[...Array(5)].map((_, i) => (
+                              <FaStar
+                                key={i}
+                                className="hire-meta-icon"
+                                style={{ color: i < (provider.rating || 0) ? '#f1c40f' : '#ddd' }}
+                              />
+                            ))}
+                          </div>
+                          <div className="hire-worker-jobs">
+                            Jobs: {provider.jobCount || 0}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="hire-worker-actions">
+                        <button className="hire-action-btn" aria-label="View provider">
+                          <FaEye /> View
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="hire-pagination">
+                    <button 
+                      onClick={prevPage} 
+                      className="hire-pagination-btn"
+                      disabled={currentPage === 1}
+                    >
+                      <FaChevronLeft /> Prev
+                    </button>
+                    
+                    <div className="hire-pagination-numbers">
+                      {[...Array(totalPages)].map((_, index) => {
+                        // Only show current page, first, last, and a few surrounding pages
+                        const pageNum = index + 1;
+                        if (
+                          pageNum === 1 || 
+                          pageNum === totalPages || 
+                          (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                        ) {
+                          return (
+                            <button 
+                              key={pageNum}
+                              onClick={() => paginate(pageNum)}
+                              className={`hire-pagination-num ${currentPage === pageNum ? 'active' : ''}`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        } else if (
+                          (pageNum === currentPage - 2 && currentPage > 3) || 
+                          (pageNum === currentPage + 2 && currentPage < totalPages - 2)
+                        ) {
+                          return <span key={pageNum} className="hire-pagination-ellipsis">...</span>;
+                        } else {
+                          return null;
                         }
-                        alt={provider.name || 'Service Provider'}
-                        className="job-image"
-                        onError={(e) => {
-                          console.error(`Failed to load image: ${e.target.src}`);
-                          e.target.onerror = null; // Prevent infinite error loop
-                          e.target.src = 'https://via.placeholder.com/150?text=No+Image';
-                        }}
-                      />
+                      })}
                     </div>
-                    <div className="job-header">
-                      <h3 className="job-title">{provider.name}</h3>
-                    </div>
-                    <div className="job-meta">
-                      <span className="job-meta-item">
-                        <FaTag className="meta-icon" /> {provider.category}
-                      </span>
-                      <span className="job-meta-item">
-                        <FaMapMarkerAlt className="meta-icon" /> {provider.location || 'Location not specified'}
-                      </span>
-                    </div>
-                    <div className="job-meta">
-                      <span className="job-meta-item">
-                        {[...Array(5)].map((_, i) => (
-                          <FaStar
-                            key={i}
-                            className="meta-icon"
-                            style={{ color: i < (provider.rating || 0) ? 'gold' : 'grey' }}
-                          />
-                        ))}
-                      </span>
-                    </div>
-                    <p className="job-description">
-                      Member since {provider.memberSince || new Date(provider.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="job-posted-at">
-                      Job Count: {provider.jobCount || 0}
-                    </p>
-                    <div className="job-actions">
-                      <button className="action-btn" aria-label="View provider">
-                        <FaEye /> View
-                      </button>
-                      {/* <button className="action-btn" aria-label="Comment on provider">
-                        <FaComment /> Contact
-                      </button>
-                      <button className="action-btn" aria-label="Share provider">
-                        <FaShare /> Share
-                      </button> */}
-                    </div>
+                    
+                    <button 
+                      onClick={nextPage} 
+                      className="hire-pagination-btn"
+                      disabled={currentPage === totalPages}
+                    >
+                      Next <FaChevronRight />
+                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>

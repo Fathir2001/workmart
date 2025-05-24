@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMoneyBillWave, FaTag, FaEye } from 'react-icons/fa';
 import SideBar from './SideBar';
 import '../styles/Payment.css';
 import Swal from 'sweetalert2';
 
-// Import banner images from src/images/banners/
+// Import banner images
 import allServices from '../Images/banners/all-services.jpg';
 import technicians from '../Images/banners/technicians.jpg';
 import acReports from '../Images/banners/ac-reports.jpg';
@@ -16,135 +15,31 @@ import ironWorks from '../Images/banners/iron-works.jpg';
 import woodWorks from '../Images/banners/wood-works.jpg';
 import fallbackBanner from '../Images/banners/fallback-banner.png'; // Fallback image
 
-const Payment = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Payment = ({ navigateToPostJob }) => {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  const [allJobs, setAllJobs] = useState([]); // Store all jobs for client-side filtering
-
   const navigate = useNavigate();
 
   const bannerImages = [
-    allServices,
-    technicians,
-    acReports,
-    cctv,
-    electricians,
-    plumbing,
-    ironWorks,
-    woodWorks,
+    allServices, technicians, acReports, cctv, electricians,
+    plumbing, ironWorks, woodWorks,
   ];
 
   const categories = [
-    'ALL',
-    'Technicians',
-    'AC Reports',
-    'CCTV',
-    'Electricians',
-    'Iron Works',
-    'Plumbing',
-    'Wood Works',
+    'ALL', 'Technicians', 'AC Reports', 'CCTV', 'Electricians', 
+    'Iron Works', 'Plumbing', 'Wood Works',
   ];
-
-  // Map the UI-friendly category names to backend category values
-  const categoryMap = useMemo(() => ({
-    'ALL': null,
-    'Technicians': 'TECHNICIANS',
-    'AC Reports': 'AC_REPORTS',
-    'CCTV': 'CCTV',
-    'Electricians': 'ELECTRICIANS',
-    'Iron Works': 'IRON_WORKS',
-    'Plumbing': 'PLUMBING',
-    'Wood Works': 'WOOD_WORKS',
-  }), []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBannerIndex((prevIndex) => {
-        const newIndex = (prevIndex + 1) % bannerImages.length;
-        return newIndex;
-      });
+      setCurrentBannerIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, [bannerImages.length]);
 
-  // Fetch all jobs once on component mount
-  useEffect(() => {
-    const fetchAllJobs = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const response = await fetch('http://localhost:5000/api/jobs');
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Fetched All Jobs:', data);
-
-        // Ensure the response is an array
-        if (!Array.isArray(data)) {
-          throw new Error('Expected an array of jobs, but received: ' + JSON.stringify(data));
-        }
-
-        // Process each job to ensure postedBy is handled properly
-        const processedJobs = data.map(job => {
-          // Log job details to help debug the user information
-          console.log(`Job ${job._id} posted by:`, job.postedBy);
-          return job;
-        });
-
-        setAllJobs(processedJobs);
-        setJobs(processedJobs); // Initially display all jobs
-        setLoading(false);
-      } catch (err) {
-        console.error('Fetch error:', err);
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchAllJobs();
-  }, []);
-
-  // Filter jobs when the selected category changes
-  useEffect(() => {
-    if (allJobs.length === 0) return; // Skip if no jobs loaded yet
-    
-    setLoading(true);
-    
-    try {
-      // If "ALL" is selected, show all jobs
-      if (selectedCategory === 'ALL') {
-        setJobs(allJobs);
-      } else {
-        // Filter jobs client-side based on selected category
-        const backendCategory = categoryMap[selectedCategory];
-        const filteredJobs = allJobs.filter(job => 
-          job.category === backendCategory || 
-          job.category === selectedCategory
-        );
-        setJobs(filteredJobs);
-      }
-    } catch (err) {
-      console.error('Filtering error:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedCategory, allJobs, categoryMap]);
-
   const handleCategorySelect = (category) => {
     if (categories.includes(category)) {
-      console.log(`Selecting category: ${category}`);
       setSelectedCategory(category);
-    } else {
-      console.warn(`Invalid category selected: ${category}`);
     }
   };
 
@@ -153,7 +48,6 @@ const Payment = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     
     if (!token || !user) {
-      // Store intended destination in localStorage before redirecting to login
       localStorage.setItem('redirectAfterLogin', '/postjob');
       
       Swal.fire({
@@ -174,7 +68,6 @@ const Payment = () => {
   };
 
   const handleImageError = (e) => {
-    console.error(`Failed to load banner image: ${e.target.src}`);
     e.target.src = fallbackBanner;
   };
 
@@ -203,69 +96,11 @@ const Payment = () => {
             <span className="post-job-text">Post Job</span>
           </button>
 
-          <div className="jobs-container">
-            {loading ? (
-              <p className="status-message">Loading jobs...</p>
-            ) : error ? (
-              <p className="error-message">Error: {error}</p>
-            ) : jobs.length === 0 ? (
-              <p className="status-message">No jobs found in the {selectedCategory} category.</p>
-            ) : (
-              <div className="jobs-list">
-                {jobs.map((job) => (
-                  <div key={job._id} className="job-item">
-                    {job.image && (
-                      <div className="job-image-container">
-                        <img 
-                          src={
-                            job.image
-                              ? job.image.startsWith('http')
-                                ? job.image
-                                : `http://localhost:5000/${job.image.replace(/^\/+/, '')}`
-                              : fallbackBanner
-                          }
-                          alt={job.title} 
-                          className="job-image" 
-                          onError={(e) => {
-                            console.error(`Failed to load job image: ${e.target.src}`);
-                            e.target.onerror = null; // Prevent infinite error loops
-                            e.target.src = fallbackBanner;
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className="job-header">
-                      <h3 className="job-title">{job.title}</h3>
-                    </div>
-                    <div className="job-meta">
-                      {job.salary && (
-                        <span className="job-meta-item">
-                          <FaMoneyBillWave className="meta-icon" /> ${job.salary}
-                        </span>
-                      )}
-                      <span className="job-meta-item">
-                        <FaTag className="meta-icon" /> {job.category}
-                      </span>
-                    </div>
-                    <p className="job-description">{job.description}</p>
-                    <p className="job-posted-at">
-                      Posted by {job.postedBy?.name || job.postedBy?.email || 'Unknown User'} on {new Date(job.createdAt).toLocaleDateString()}
-                    </p>
-                    <div className="job-actions">
-                      <button className="action-btn" aria-label="View job">
-                        <FaEye /> View (0)
-                      </button>
-                      {/* <button className="action-btn" aria-label="Comment on job">
-                        <FaComment /> Comment (0)
-                      </button>
-                      <button className="action-btn" aria-label="Share job">
-                        <FaShare /> Share (0)
-                      </button> */}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* Information about posting jobs */}
+          <div className="job-posting-info">
+            <h2>Looking to offer your services?</h2>
+            <p>Post your job listing here to get connected with potential clients.</p>
+            <p>Click the "Post Job" button to create a new job listing.</p>
           </div>
         </div>
       </div>
