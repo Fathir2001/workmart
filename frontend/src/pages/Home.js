@@ -3,7 +3,7 @@ import "../styles/Home.css";
 // import NavBar2 from "../components/Navbar2";
 import Introduction from "../components/Introduction";
 import Introduction2 from "../components/Introduction2";
-import Comments from "../components/Comments";
+// import Comments from "../components/Comments";
 import Category from "../components/Category";
 import ServiceProviders from "../components/ServiceProviders";
 import Contact from "../components/Contact";
@@ -19,9 +19,10 @@ const Home = () => {
       
       <Introduction/>
       </div>
-      <Introduction2/>
-      <Comments/>
       <Category/>
+      <Introduction2/>
+      {/* <Comments/> */}
+      
       <ServiceProviders/>
       <div>
       <Contact/>

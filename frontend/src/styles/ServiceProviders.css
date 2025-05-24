@@ -65,17 +65,21 @@
 .providers-profiles {
   flex: 1;
   display: flex;
-  gap: 30px;
+  gap: 20px;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .provider-card {
   background-color: white;
   border-radius: 10px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  max-width: 250px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .provider-card:hover {
@@ -83,36 +87,69 @@
 }
 
 .provider-image {
-  width: 200px;
-  height: 220px;
+  width: 160px;
+  height: 160px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .provider-name {
-  font-size: 22px;
+  font-size: 18px;
   color: #333333;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   text-align: center;
 }
 
-.social-icons {
+.provider-category {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 15px;
-  color: white;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  background-color: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 15px;
 }
 
-.social-icon {
-  color: white;
-  font-size: 20px;
-  transition: color 0.3s ease;
+.category-icon {
+  margin-right: 5px;
+  color: #ff4d4d;
 }
 
-.social-icon:hover {
-  color: white;
+.provider-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.star {
+  color: #ddd;
+  font-size: 16px;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+.rating-value {
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.providers-loading, .providers-error, .no-providers {
+  width: 100%;
+  padding: 30px;
+  text-align: center;
+  color: #666;
+}
+
+.providers-error {
+  color: #e74c3c;
 }
 
 /* Responsive adjustments */
@@ -126,6 +163,14 @@
     max-width: 100%;
   }
   
+  .providers-title {
+    text-align: center;
+  }
+  
+  .providers-description {
+    text-align: center;
+  }
+  
   .providers-profiles {
     justify-content: center;
     width: 100%;
@@ -137,12 +182,20 @@
     font-size: 36px;
   }
   
+  .provider-card {
+    width: calc(50% - 20px);
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
   .providers-profiles {
     flex-direction: column;
     align-items: center;
   }
   
   .provider-card {
-    max-width: 100%;
+    width: 100%;
+    max-width: 230px;
   }
 }

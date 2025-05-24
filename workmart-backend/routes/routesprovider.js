@@ -130,12 +130,39 @@ router.post('/:id/rate', async (req, res) => {
   }
 });
 
+// Update the GET /public route to include filtering, sorting and pagination
+
 // Get public list of service providers (no authentication required)
 router.get('/public', async (req, res) => {
   try {
-    const serviceProviders = await ServiceProvider.find();
-    res.json(serviceProviders);
+    const { category, limit = 10, sort = 'rating', order = 'desc' } = req.query;
+    
+    // Build query
+    const query = {};
+    if (category) query.category = category;
+    
+    // Determine sort order
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+    
+    // Fetch providers with query, sort, and limit
+    const serviceProviders = await ServiceProvider.find(query)
+      .sort(sortOptions)
+      .limit(Number(limit));
+    
+    // Return simplified data for public display
+    const simplifiedProviders = serviceProviders.map(provider => ({
+      _id: provider._id,
+      name: provider.name,
+      category: provider.category,
+      profilePic: provider.profilePic,
+      rating: provider.rating,
+      isVerified: provider.isVerified
+    }));
+    
+    res.json(simplifiedProviders);
   } catch (err) {
+    console.error('Error fetching public service providers:', err);
     res.status(500).json({ message: err.message });
   }
 });
