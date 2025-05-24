@@ -171,3 +171,102 @@
   color: #777;
   font-style: italic;
 }
+
+.wm-pv__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.wm-pv__edit-button,
+.wm-pv__save-button,
+.wm-pv__cancel-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.wm-pv__edit-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.wm-pv__save-button {
+  background-color: #4CAF50;
+  color: white;
+  margin-right: 10px;
+}
+
+.wm-pv__cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.wm-pv__edit-button:hover {
+  background-color: #e0e0e0;
+}
+
+.wm-pv__save-button:hover {
+  background-color: #45a049;
+}
+
+.wm-pv__cancel-button:hover {
+  background-color: #d32f2f;
+}
+
+.wm-pv__edit-actions {
+  display: flex;
+}
+
+.wm-pv__edit-form {
+  width: 100%;
+}
+
+.wm-pv__form-group {
+  margin-bottom: 15px;
+}
+
+.wm-pv__form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.wm-pv__form-input,
+.wm-pv__form-textarea,
+.wm-pv__form-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.wm-pv__form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.wm-pv__update-message {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

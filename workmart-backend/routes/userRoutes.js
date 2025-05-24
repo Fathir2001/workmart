@@ -129,4 +129,100 @@ router.get('/service-provider-profile', auth, async (req, res) => {
   }
 });
 
+// Update user profile
+router.put('/update-profile', auth, async (req, res) => {
+  try {
+    const { name, email, phone, location } = req.body;
+    
+    // Find the user
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Check if email is being changed and if it's already taken
+    if (email !== user.email) {
+      const emailExists = await User.findOne({ email });
+      if (emailExists) {
+        return res.status(400).json({ message: 'Email is already in use' });
+      }
+    }
+    
+    // Check if phone is being changed and if it's already taken
+    if (phone !== user.phone) {
+      const phoneExists = await User.findOne({ phone });
+      if (phoneExists) {
+        return res.status(400).json({ message: 'Phone number is already in use' });
+      }
+    }
+    
+    // Update user fields
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (location) user.location = location;
+    
+    const updatedUser = await user.save();
+    
+    // Return updated user without password
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      location: updatedUser.location,
+      isAdmin: updatedUser.isAdmin,
+      createdAt: updatedUser.createdAt
+    });
+  } catch (err) {
+    console.error('Error updating profile:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update service provider profile
+router.put('/update-service-provider', auth, async (req, res) => {
+  try {
+    const { 
+      name, phoneNumber, location, description, category, 
+      experience, availability, specialties 
+    } = req.body;
+    
+    // First, check if the user exists
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Then check if service provider profile exists
+    let serviceProvider = await ServiceProvider.findOne({ userId: req.userId });
+    
+    if (!serviceProvider) {
+      return res.status(404).json({ message: 'Service provider profile not found' });
+    }
+    
+    // Update service provider fields
+    if (name) {
+      serviceProvider.name = name;
+      // Also update the user's name to keep them in sync
+      user.name = name;
+      await user.save();
+    }
+    
+    if (phoneNumber) serviceProvider.phoneNumber = phoneNumber;
+    if (location) serviceProvider.location = location;
+    if (description) serviceProvider.description = description;
+    if (category) serviceProvider.category = category;
+    if (experience) serviceProvider.experience = experience;
+    if (availability) serviceProvider.availability = availability;
+    if (specialties) serviceProvider.specialties = specialties;
+    
+    const updatedServiceProvider = await serviceProvider.save();
+    res.json(updatedServiceProvider);
+  } catch (err) {
+    console.error('Error updating service provider profile:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
