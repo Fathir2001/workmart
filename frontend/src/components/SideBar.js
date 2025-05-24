@@ -1,15 +1,40 @@
 import React from 'react';
-import '../styles/SideBar.css'; // Adjust path as needed
+import '../styles/SideBar.css';
 
+// Define category icons
+const categoryIcons = {
+  'ALL': '🔍',
+  'Technicians': '🛠️',
+  'AC Repairs': '❄️',
+  'CCTV': '📹',
+  'Electricians': '⚡',
+  'Plumbing': '🚿',
+  'Iron Works': '⚙️',
+  'Wood Works': '🪓',
+  'Constructions': '🏗️',
+  'Electronic Repairs': '📱',
+  'Glass & Aluminium': '🪟',
+  'Masonry': '🧱',
+  'Odd Jobs': '📋',
+  'Vehicles': '🚗'
+};
+
+// Updated categories array to match all service options
 const categories = [
   'ALL',
   'Technicians',
-  'AC Reports',
+  'AC Repairs', // Changed from 'AC Reports' to match dropdown
   'CCTV',
   'Electricians',
-  'Iron Works',
   'Plumbing',
+  'Iron Works',
   'Wood Works',
+  'Constructions',
+  'Electronic Repairs',
+  'Glass & Aluminium',
+  'Masonry',
+  'Odd Jobs',
+  'Vehicles'
 ];
 
 const SideBar = ({ onCategorySelect, selectedCategory }) => {
@@ -31,6 +56,7 @@ const SideBar = ({ onCategorySelect, selectedCategory }) => {
               className={`menu-item ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => handleCategoryClick(category)}
             >
+              <span className="category-icon">{categoryIcons[category] || '👷'}</span>
               {category}
             </li>
           ))}
