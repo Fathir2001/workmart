@@ -9,7 +9,8 @@ import {
   FaHammer,
   FaTag,
   FaMapMarkerAlt,
-  FaStar
+  FaStar,
+  FaEye
 } from "react-icons/fa";
 import "../styles/Category.css";
 import ServiceProviderDetailsModal from './ServiceProviderDetailsModal';
@@ -121,11 +122,7 @@ const Category = ({ onCategorySelect, compact }) => {
         ) : (
           <div className="providers-by-category">
             {serviceProviders.map((provider) => (
-              <div 
-                key={provider._id} 
-                className="provider-card"
-                onClick={() => handleViewProviderDetails(provider)}
-              >
+              <div key={provider._id} className="provider-card">
                 <div className="provider-image-container">
                   <img
                     src={
@@ -165,6 +162,17 @@ const Category = ({ onCategorySelect, compact }) => {
                   <p className="worker-since">
                     Member since {provider.memberSince || new Date(provider.createdAt).toLocaleDateString()}
                   </p>
+                  <div className="worker-action-buttons">
+                    <button 
+                      className="view-provider-btn"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click from triggering
+                        handleViewProviderDetails(provider);
+                      }}
+                    >
+                      <FaEye /> View Details
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
