@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const Job = require('../models/Job');
+const User = require('../models/User');
+const ServiceProvider = require('../models/ServiceProvider');
 
 // Configure multer for image upload
 const storage = multer.diskStorage({
@@ -32,16 +34,19 @@ const upload = multer({
 
 // Middleware to authenticate user
 const auth = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ message: 'No token provided' });
-
   try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    req.user = decoded; // Decoded token contains { id, isAdmin }
+    req.userId = decoded.id;  // This line is important - it should set req.userId
+    req.user = decoded; // Keep this for backward compatibility
     next();
   } catch (err) {
     console.error('Auth middleware error:', err);
-    res.status(401).json({ message: 'Invalid token' });
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
 
@@ -59,33 +64,79 @@ router.get('/', async (req, res) => {
 // Create a job with image upload
 router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
+    const userId = req.userId;
+    
+    // Create job data
     const jobData = {
       title: req.body.title,
       description: req.body.description,
       category: req.body.category,
       salary: req.body.salary ? parseFloat(req.body.salary) : undefined,
-      postedBy: req.user.id, // Use req.user.id instead of req.user.userId
-      image: req.file ? `/uploads/${req.file.filename}` : undefined, // Save image path
+      postedBy: userId,
+      image: req.file ? `uploads/${req.file.filename}` : undefined, // Notice I removed the leading slash
     };
 
-    // Validate category
-    const validCategories = [
-      'Technicians', 'AC Repairs', 'CCTV', 'Constructions', 'Electricians',
-      'Electronic Repairs', 'Glass & Aluminium', 'Iron Works', 'Masonry',
-      'Odd Jobs', 'Plumbing', 'Wood Works', 'Vehicles'
-    ];
-    if (!validCategories.includes(jobData.category)) {
-      return res.status(400).json({ message: 'Invalid category' });
-    }
-
-    // Validate salary if provided
-    if (jobData.salary && jobData.salary <= 0) {
-      return res.status(400).json({ message: 'Salary must be a positive number' });
-    }
-
+    // Create the job
     const job = new Job(jobData);
     const newJob = await job.save();
-    res.status(201).json(newJob);
+
+    // Get user information
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if user already exists as a service provider
+    let serviceProvider = await ServiceProvider.findOne({ userId: userId });
+
+    // Determine profile pic path
+    let profilePic = '';
+    
+    // If the user uploaded an image for this job, use it as the profile picture
+    if (req.file) {
+      profilePic = `uploads/${req.file.filename}`;
+    } 
+    // Otherwise if user has a profilePic already, use that
+    else if (user.profilePic) {
+      profilePic = user.profilePic;
+    }
+
+    // If not found, create a new service provider record
+    if (!serviceProvider) {
+      serviceProvider = new ServiceProvider({
+        userId: userId,
+        name: user.name,
+        profilePic: profilePic, // Set the profile picture
+        category: jobData.category,
+        location: user.location || 'Not specified',
+        jobCount: 1,
+        rating: 0,
+        memberSince: new Date().toISOString().split('T')[0],
+      });
+      
+      await serviceProvider.save();
+    } else {
+      // Update existing service provider
+      serviceProvider.jobCount += 1;
+      
+      // Update category if needed
+      if (serviceProvider.category !== jobData.category) {
+        serviceProvider.category = jobData.category;
+      }
+      
+      // Update profile picture if a new one was uploaded and there isn't one already
+      if (profilePic && (!serviceProvider.profilePic || serviceProvider.profilePic === '')) {
+        serviceProvider.profilePic = profilePic;
+      }
+      
+      await serviceProvider.save();
+    }
+
+    res.status(201).json({
+      job: newJob,
+      serviceProvider: serviceProvider
+    });
+    
   } catch (err) {
     console.error('Error creating job:', err);
     res.status(400).json({ message: err.message });

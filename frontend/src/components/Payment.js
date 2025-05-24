@@ -210,11 +210,18 @@ const Payment = () => {
                     {job.image && (
                       <div className="job-image-container">
                         <img 
-                          src={job.image} 
+                          src={
+                            job.image
+                              ? job.image.startsWith('http')
+                                ? job.image
+                                : `http://localhost:5000/${job.image.replace(/^\/+/, '')}`
+                              : fallbackBanner
+                          }
                           alt={job.title} 
                           className="job-image" 
                           onError={(e) => {
                             console.error(`Failed to load job image: ${e.target.src}`);
+                            e.target.onerror = null; // Prevent infinite error loops
                             e.target.src = fallbackBanner;
                           }}
                         />

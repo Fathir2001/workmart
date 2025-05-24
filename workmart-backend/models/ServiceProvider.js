@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const serviceProviderSchema = new mongoose.Schema({
+  // Add this field to link to User
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   name: {
     type: String,
     required: true,

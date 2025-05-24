@@ -194,12 +194,18 @@ const ViewWorkers = () => {
                       <img
                         src={
                           provider.profilePic
-                            ? `http://localhost:5000/${provider.profilePic}`
+                            ? provider.profilePic.startsWith('http')
+                              ? provider.profilePic
+                              : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
                             : 'http://localhost:5000/uploads/profile/profile.png'
                         }
                         alt={provider.name || 'Service Provider'}
                         className="job-image"
-                        onError={handleImageError}
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${e.target.src}`);
+                          e.target.onerror = null; // Prevent infinite error loop
+                          e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                        }}
                       />
                     </div>
                     <div className="job-header">
