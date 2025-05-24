@@ -1,9 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTimes, FaMapMarkerAlt, FaTag, FaPhone, FaEnvelope, FaStar, FaBriefcase, FaCalendarAlt, FaCheck, FaUserClock } from 'react-icons/fa';
+import axios from 'axios';
 import '../styles/DetailsModal.css';
 
 const ServiceProviderDetailsModal = ({ provider, onClose }) => {
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
+  const [currentRating, setCurrentRating] = useState(provider?.rating || 0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   if (!provider) return null;
+
+  const handleRatingHover = (rating) => {
+    setHoverRating(rating);
+  };
+  
+  const handleRatingClick = async (rating) => {
+    if (isSubmitting) return;
+    
+    setUserRating(rating);
+    setIsSubmitting(true);
+    
+    try {
+      // Get current user ID from localStorage if available
+      const userId = localStorage.getItem('userId') || null;
+      
+      // Log the request details for debugging
+      console.log('Sending rating request to:', `http://localhost:5000/api/providers/${provider._id}/rate`);
+      console.log('Provider ID:', provider._id);
+      console.log('Request payload:', { rating, userId });
+      
+      const response = await axios.post(
+        `http://localhost:5000/api/providers/${provider._id}/rate`,
+        { rating, userId }
+      );
+      
+      console.log('Rating response:', response.data);
+      
+      // Update the displayed rating with the new average from server
+      setCurrentRating(response.data.newRating);
+      setIsRatingSubmitted(true);
+      setTimeout(() => setIsRatingSubmitted(false), 3000);
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      // More detailed error logging
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Error request:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const renderStars = (isInteractive = false) => {
+    return [...Array(5)].map((_, i) => {
+      const starValue = i + 1;
+      return (
+        <FaStar
+          key={i}
+          className={`star-icon ${isInteractive ? 'interactive' : ''}`}
+          style={{ 
+            color: isInteractive 
+              ? (starValue <= (hoverRating || userRating) ? '#f1c40f' : '#ddd')
+              : (starValue <= currentRating ? '#f1c40f' : '#ddd')
+          }}
+          onMouseEnter={isInteractive ? () => handleRatingHover(starValue) : undefined}
+          onMouseLeave={isInteractive ? () => handleRatingHover(0) : undefined}
+          onClick={isInteractive ? () => handleRatingClick(starValue) : undefined}
+        />
+      );
+    });
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -36,15 +114,20 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
             </div>
             <div className="provider-info">
               <h3 className="provider-name">{provider.name}</h3>
-              <div className="provider-rating">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className="star-icon"
-                    style={{ color: i < (provider.rating || 0) ? '#f1c40f' : '#ddd' }}
-                  />
-                ))}
-                <span className="rating-text">{provider.rating || 0}/5</span>
+              <div className="provider-rating-display">
+                <div className="current-rating">
+                  {renderStars(false)}
+                  <span className="rating-text">{currentRating}/5</span>
+                </div>
+              </div>
+              <div className="user-rating-section">
+                <p>Rate this service provider:</p>
+                <div className="rating-input">
+                  {renderStars(true)}
+                </div>
+                {isRatingSubmitted && (
+                  <span className="rating-success">Thank you for your rating!</span>
+                )}
               </div>
               <div className="provider-badge">
                 <span className="badge">

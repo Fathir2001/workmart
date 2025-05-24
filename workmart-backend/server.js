@@ -57,6 +57,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/admin', adminRoutes);  // This line must be present
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/providers', require('./routes/routesprovider'));
 app.use('/uploads', express.static('uploads'));
 
 // Basic Route

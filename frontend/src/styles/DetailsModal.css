@@ -264,6 +264,53 @@
   color: #2c3e50;
 }
 
+/* Rating specific styles */
+.provider-rating-display {
+  margin-bottom: 10px;
+}
+
+.user-rating-section {
+  margin: 15px 0;
+}
+
+.rating-input {
+  display: flex;
+  align-items: center;
+}
+
+.star-icon.interactive {
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-right: 3px;
+  transition: color 0.2s;
+}
+
+.star-icon.interactive:hover {
+  transform: scale(1.2);
+}
+
+.rating-success {
+  color: #2ecc71;
+  font-size: 0.9rem;
+  margin-left: 10px;
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.current-rating {
+  display: flex;
+  align-items: center;
+}
+
+.rating-text {
+  margin-left: 8px;
+  font-weight: bold;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .modal-header h2 {

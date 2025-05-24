@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const ServiceProvider = require('../models/ServiceProvider');
-const authMiddleware = require('../middleware/auth');
-const adminMiddleware = require('../middleware/admin');
+// Fix the middleware import
+const { auth, verifyAdmin } = require('../middleware/auth');
 
 // Get all service providers (admin only)
-router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
+router.get('/', auth, verifyAdmin, async (req, res) => {
   try {
     const serviceProviders = await ServiceProvider.find();
     res.json(serviceProviders);
@@ -15,7 +15,7 @@ router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 // Create a new service provider (admin only)
-router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
+router.post('/', auth, verifyAdmin, async (req, res) => {
   const { name, profilePic, category, location } = req.body;
 
   try {
@@ -34,7 +34,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 // Update a service provider (admin only)
-router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
+router.put('/:id', auth, verifyAdmin, async (req, res) => {
   try {
     const serviceProvider = await ServiceProvider.findById(req.params.id);
     if (!serviceProvider) {
@@ -54,7 +54,7 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 // Delete a service provider (admin only)
-router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
+router.delete('/:id', auth, verifyAdmin, async (req, res) => {
   try {
     const serviceProvider = await ServiceProvider.findById(req.params.id);
     if (!serviceProvider) {
@@ -68,5 +68,68 @@ router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
+// Add a rating for a service provider (make public - no auth required)
+router.post('/:id/rate', async (req, res) => {
+  try {
+    const { rating, userId } = req.body;
+    
+    // Add debugging
+    console.log(`Received rating request for provider: ${req.params.id}`);
+    console.log('Rating value:', rating);
+    console.log('User ID:', userId || 'anonymous');
+    
+    const serviceProvider = await ServiceProvider.findById(req.params.id);
+    
+    if (!serviceProvider) {
+      console.log(`Provider not found with ID: ${req.params.id}`);
+      return res.status(404).json({ message: 'Service provider not found' });
+    }
+
+    // Validate rating value
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+
+    // If the user has already submitted a rating, update it instead of adding a new one
+    const userIdToUse = userId || 'anonymous';
+    const existingRatingIndex = serviceProvider.ratings.findIndex(
+      r => r.userId === userIdToUse
+    );
+
+    if (existingRatingIndex !== -1) {
+      // Update existing rating
+      serviceProvider.ratings[existingRatingIndex].value = rating;
+    } else {
+      // Add new rating
+      serviceProvider.ratings.push({
+        userId: userIdToUse,
+        value: rating
+      });
+    }
+
+    // Calculate new average rating
+    serviceProvider.calculateAverageRating();
+    await serviceProvider.save();
+
+    console.log(`Rating saved successfully. New average: ${serviceProvider.rating}`);
+    res.json({ 
+      message: 'Rating submitted successfully', 
+      newRating: serviceProvider.rating 
+    });
+  } catch (err) {
+    console.error('Error in rating submission:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get public list of service providers (no authentication required)
+router.get('/public', async (req, res) => {
+  try {
+    const serviceProviders = await ServiceProvider.find();
+    res.json(serviceProviders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;
