@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FaTag, FaMapMarkerAlt, FaEye, FaComment, FaShare, FaStar } from 'react-icons/fa';
+import { FaTag, FaMapMarkerAlt, FaEye, FaStar } from 'react-icons/fa';
 import SideBar from './SideBar';
 import '../styles/ViewWorkers.css';
 
@@ -234,12 +234,12 @@ const ViewWorkers = () => {
                       <button className="action-btn" aria-label="View provider">
                         <FaEye /> View
                       </button>
-                      <button className="action-btn" aria-label="Comment on provider">
+                      {/* <button className="action-btn" aria-label="Comment on provider">
                         <FaComment /> Contact
                       </button>
                       <button className="action-btn" aria-label="Share provider">
                         <FaShare /> Share
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
