@@ -15,10 +15,10 @@ const Hire = () => {
 
   return (
     <div className="hire-page-container">
-      <div className="hire-page-header">
+      {/* <div className="hire-page-header">
         <h1>Hire Skilled Professionals</h1>
         <p>Find the perfect service provider for your needs or browse available jobs.</p>
-      </div>
+      </div> */}
       
       <div className="hire-page-main">
         <div className="hire-tabs">

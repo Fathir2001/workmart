@@ -10,7 +10,13 @@ import {
   FaTag,
   FaMapMarkerAlt,
   FaStar,
-  FaEye
+  FaEye,
+  FaBuilding,
+  FaMicrochip,
+  FaWindowMaximize,
+  FaLayerGroup,
+  FaBriefcase,
+  FaCar
 } from "react-icons/fa";
 import "../styles/Category.css";
 import ServiceProviderDetailsModal from './ServiceProviderDetailsModal';
@@ -22,25 +28,39 @@ const Category = ({ onCategorySelect, compact }) => {
   const [error, setError] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
 
+  // Updated categories array with all services and appropriate icons
   const categories = [
     { name: "Technicians", icon: <FaTools />, value: "Technicians" },
-    { name: "AC Reports", icon: <FaSnowflake />, value: "AC Reports" },
+    { name: "AC Repairs", icon: <FaSnowflake />, value: "AC Repairs" }, // Renamed from AC Reports
     { name: "CCTV", icon: <FaVideo />, value: "CCTV" },
     { name: "Electricians", icon: <FaBolt />, value: "Electricians" },
     { name: "Plumbing", icon: <FaWrench />, value: "Plumbing" },
     { name: "Iron Works", icon: <FaHammer />, value: "Iron Works" },
     { name: "Wood Works", icon: <FaHammer />, value: "Wood Works" },
+    // Added missing categories
+    { name: "Constructions", icon: <FaBuilding />, value: "Constructions" },
+    { name: "Electronic Repairs", icon: <FaMicrochip />, value: "Electronic Repairs" },
+    { name: "Glass & Aluminium", icon: <FaWindowMaximize />, value: "Glass & Aluminium" },
+    { name: "Masonry", icon: <FaLayerGroup />, value: "Masonry" },
+    { name: "Odd Jobs", icon: <FaBriefcase />, value: "Odd Jobs" },
+    { name: "Vehicles", icon: <FaCar />, value: "Vehicles" },
   ];
 
-  // Using useMemo to memoize the categoryMap to prevent it from being recreated on each render
+  // Updated categoryMap to include all categories
   const categoryMap = useMemo(() => ({
     'Technicians': 'TECHNICIANS',
-    'AC Reports': 'AC_REPORTS',
+    'AC Repairs': 'AC_REPAIRS',
     'CCTV': 'CCTV',
     'Electricians': 'ELECTRICIANS',
     'Plumbing': 'PLUMBING',
     'Iron Works': 'IRON_WORKS',
     'Wood Works': 'WOOD_WORKS',
+    'Constructions': 'CONSTRUCTIONS',
+    'Electronic Repairs': 'ELECTRONIC_REPAIRS',
+    'Glass & Aluminium': 'GLASS_ALUMINIUM',
+    'Masonry': 'MASONRY',
+    'Odd Jobs': 'ODD_JOBS',
+    'Vehicles': 'VEHICLES',
   }), []);
 
   useEffect(() => {
@@ -86,14 +106,29 @@ const Category = ({ onCategorySelect, compact }) => {
     setSelectedProvider(null);
   };
 
+  // Add horizontal scrolling functionality for the categories grid
+  const handleScrollLeft = () => {
+    const grid = document.querySelector('.categories-grid');
+    if (grid) {
+      grid.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollRight = () => {
+    const grid = document.querySelector('.categories-grid');
+    if (grid) {
+      grid.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className={`hire-category-container ${compact ? 'hire-category-compact' : ''}`}>
       <h4 className="category-title">Categories</h4>
       <div className="header-row">
         <h2 className="category-heading">What do you need to be done?</h2>
         <div className="nav-buttons">
-          <button className="nav-btn">←</button>
-          <button className="nav-btn">→</button>
+          <button className="nav-btn" onClick={handleScrollLeft}>←</button>
+          <button className="nav-btn" onClick={handleScrollRight}>→</button>
         </div>
       </div>
       
