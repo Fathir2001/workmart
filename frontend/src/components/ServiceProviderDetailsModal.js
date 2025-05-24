@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { FaTimes, FaMapMarkerAlt, FaTag, FaPhone, FaEnvelope, FaStar, FaBriefcase, FaCalendarAlt, FaCheck, FaUserClock } from 'react-icons/fa';
 import axios from 'axios';
 import '../styles/DetailsModal.css';
+import placeholderImage from '../Images/default-profile.jpg'; // Import the local placeholder image
+
+// Define a base64 data URL for a simple placeholder image
+const defaultImagePlaceholder = 'data:image/svg+xml;charset=UTF-8,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f0f0f0"/%3E%3Ctext x="50%25" y="50%25" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="Arial, sans-serif" fill="%23999999"%3ENo Image%3C/text%3E%3C/svg%3E';
 
 const ServiceProviderDetailsModal = ({ provider, onClose, onRatingUpdate }) => {
   const [userRating, setUserRating] = useState(0);
@@ -109,6 +113,12 @@ const ServiceProviderDetailsModal = ({ provider, onClose, onRatingUpdate }) => {
     });
   };
 
+  // Image loading error handler
+  const handleImageError = (e) => {
+    e.target.onerror = null; // Prevent infinite error loops
+    e.target.src = placeholderImage; // Use local placeholder
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -128,14 +138,11 @@ const ServiceProviderDetailsModal = ({ provider, onClose, onRatingUpdate }) => {
                     ? provider.profilePic.startsWith('http')
                       ? provider.profilePic
                       : `http://localhost:5000/${provider.profilePic.replace(/^\/+/, '')}`
-                    : 'https://via.placeholder.com/200?text=No+Image'
+                    : placeholderImage // Use local placeholder
                 }
                 alt={provider.name}
                 className="provider-image"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://via.placeholder.com/200?text=No+Image';
-                }}
+                onError={handleImageError} // Use the new error handler
               />
             </div>
             <div className="provider-info">
