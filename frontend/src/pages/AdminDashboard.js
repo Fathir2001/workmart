@@ -401,13 +401,23 @@ const AdminDashboard = () => {
 
       {/* Modal for Create/Update */}
       {showModal.type && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ background: 'white', padding: '20px', borderRadius: '5px', width: '400px' }}>
-            <h2>{showModal.action === 'create' ? 'Add' : 'Edit'} {showModal.type.charAt(0).toUpperCase() + showModal.type.slice(1)}</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <div className="admin-modal-header">
+              <h2>{showModal.action === 'create' ? 'Add' : 'Edit'} {showModal.type.charAt(0).toUpperCase() + showModal.type.slice(1)}</h2>
+              <button 
+                type="button" 
+                className="admin-modal-close" 
+                onClick={handleCloseModal}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="admin-form">
               {showModal.type === 'users' && (
                 <>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Name:</label>
                     <input
                       type="text"
@@ -417,7 +427,7 @@ const AdminDashboard = () => {
                       required
                     />
                   </div>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Email:</label>
                     <input
                       type="email"
@@ -428,7 +438,7 @@ const AdminDashboard = () => {
                     />
                   </div>
                   {showModal.action === 'create' && (
-                    <div>
+                    <div className="admin-form-group">
                       <label>Password:</label>
                       <input
                         type="password"
@@ -439,21 +449,23 @@ const AdminDashboard = () => {
                       />
                     </div>
                   )}
-                  <div>
-                    <label>Is Admin:</label>
-                    <input
-                      type="checkbox"
-                      name="isAdmin"
-                      checked={formData.isAdmin || false}
-                      onChange={handleCheckboxChange}
-                    />
+                  <div className="admin-form-group">
+                    <label className="admin-checkbox-label">
+                      <input
+                        type="checkbox"
+                        name="isAdmin"
+                        checked={formData.isAdmin || false}
+                        onChange={handleCheckboxChange}
+                      />
+                      Is Admin
+                    </label>
                   </div>
                 </>
               )}
 
               {showModal.type === 'jobs' && (
                 <>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Title:</label>
                     <input
                       type="text"
@@ -463,7 +475,7 @@ const AdminDashboard = () => {
                       required
                     />
                   </div>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Description:</label>
                     <textarea
                       name="description"
@@ -477,7 +489,7 @@ const AdminDashboard = () => {
 
               {showModal.type === 'contacts' && (
                 <>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Name:</label>
                     <input
                       type="text"
@@ -487,7 +499,7 @@ const AdminDashboard = () => {
                       required
                     />
                   </div>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Email:</label>
                     <input
                       type="email"
@@ -497,7 +509,7 @@ const AdminDashboard = () => {
                       required
                     />
                   </div>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Message:</label>
                     <textarea
                       name="message"
@@ -511,7 +523,7 @@ const AdminDashboard = () => {
 
               {showModal.type === 'service-providers' && (
                 <>
-                  <div>
+                  <div className="admin-form-group">
                     <label>Name:</label>
                     <input
                       type="text"
@@ -522,7 +534,7 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div>
+                  <div className="admin-form-group">
                     <label>Email:</label>
                     <input
                       type="email"
@@ -532,7 +544,7 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div>
+                  <div className="admin-form-group">
                     <label>Phone Number:</label>
                     <input
                       type="tel"
@@ -542,7 +554,7 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div>
+                  <div className="admin-form-group">
                     <label>Profile Picture:</label>
                     <input
                       type="file"
@@ -552,98 +564,102 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div>
-                    <label>Category:</label>
-                    <select
-                      name="category"
-                      value={formData.category || ''}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="" disabled>Select a category</option>
-                      <option value="Technicians">Technicians</option>
-                      <option value="AC Repairs">AC Repairs</option>
-                      <option value="CCTV">CCTV</option>
-                      <option value="Electricians">Electricians</option>
-                      <option value="Plumbing">Plumbing</option>
-                      <option value="Iron Works">Iron Works</option>
-                      <option value="Wood Works">Wood Works</option>
-                      <option value="Constructions">Constructions</option>
-                      <option value="Electronic Repairs">Electronic Repairs</option>
-                      <option value="Glass & Aluminium">Glass & Aluminium</option>
-                      <option value="Masonry">Masonry</option>
-                      <option value="Odd Jobs">Odd Jobs</option>
-                      <option value="Vehicles">Vehicles</option>
-                    </select>
+                  <div className="admin-form-row">
+                    <div className="admin-form-group">
+                      <label>Category:</label>
+                      <select
+                        name="category"
+                        value={formData.category || ''}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="" disabled>Select a category</option>
+                        <option value="Technicians">Technicians</option>
+                        <option value="AC Repairs">AC Repairs</option>
+                        <option value="CCTV">CCTV</option>
+                        <option value="Electricians">Electricians</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Iron Works">Iron Works</option>
+                        <option value="Wood Works">Wood Works</option>
+                        <option value="Constructions">Constructions</option>
+                        <option value="Electronic Repairs">Electronic Repairs</option>
+                        <option value="Glass & Aluminium">Glass & Aluminium</option>
+                        <option value="Masonry">Masonry</option>
+                        <option value="Odd Jobs">Odd Jobs</option>
+                        <option value="Vehicles">Vehicles</option>
+                      </select>
+                    </div>
+                    
+                    <div className="admin-form-group">
+                      <label>Location:</label>
+                      <select
+                        name="location"
+                        value={formData.location || ''}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="" disabled>Select a location</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Kalutara">Kalutara</option>
+                        <option value="Kandy">Kandy</option>
+                        <option value="Matale">Matale</option>
+                        <option value="Nuwara Eliya">Nuwara Eliya</option>
+                        <option value="Galle">Galle</option>
+                        <option value="Matara">Matara</option>
+                        <option value="Hambantota">Hambantota</option>
+                        <option value="Jaffna">Jaffna</option>
+                        <option value="Kilinochchi">Kilinochchi</option>
+                        <option value="Mannar">Mannar</option>
+                        <option value="Mullaitivu">Mullaitivu</option>
+                        <option value="Vavuniya">Vavuniya</option>
+                        <option value="Batticaloa">Batticaloa</option>
+                        <option value="Ampara">Ampara</option>
+                        <option value="Trincomalee">Trincomalee</option>
+                        <option value="Kurunegala">Kurunegala</option>
+                        <option value="Puttalam">Puttalam</option>
+                        <option value="Anuradhapura">Anuradhapura</option>
+                        <option value="Polonnaruwa">Polonnaruwa</option>
+                        <option value="Badulla">Badulla</option>
+                        <option value="Monaragala">Monaragala</option>
+                        <option value="Ratnapura">Ratnapura</option>
+                        <option value="Kegalle">Kegalle</option>
+                      </select>
+                    </div>
                   </div>
                   
-                  <div>
-                    <label>Location:</label>
-                    <select
-                      name="location"
-                      value={formData.location || ''}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="" disabled>Select a location</option>
-                      <option value="Colombo">Colombo</option>
-                      <option value="Gampaha">Gampaha</option>
-                      <option value="Kalutara">Kalutara</option>
-                      <option value="Kandy">Kandy</option>
-                      <option value="Matale">Matale</option>
-                      <option value="Nuwara Eliya">Nuwara Eliya</option>
-                      <option value="Galle">Galle</option>
-                      <option value="Matara">Matara</option>
-                      <option value="Hambantota">Hambantota</option>
-                      <option value="Jaffna">Jaffna</option>
-                      <option value="Kilinochchi">Kilinochchi</option>
-                      <option value="Mannar">Mannar</option>
-                      <option value="Mullaitivu">Mullaitivu</option>
-                      <option value="Vavuniya">Vavuniya</option>
-                      <option value="Batticaloa">Batticaloa</option>
-                      <option value="Ampara">Ampara</option>
-                      <option value="Trincomalee">Trincomalee</option>
-                      <option value="Kurunegala">Kurunegala</option>
-                      <option value="Puttalam">Puttalam</option>
-                      <option value="Anuradhapura">Anuradhapura</option>
-                      <option value="Polonnaruwa">Polonnaruwa</option>
-                      <option value="Badulla">Badulla</option>
-                      <option value="Monaragala">Monaragala</option>
-                      <option value="Ratnapura">Ratnapura</option>
-                      <option value="Kegalle">Kegalle</option>
-                    </select>
+                  <div className="admin-form-row">
+                    <div className="admin-form-group">
+                      <label>Experience Level:</label>
+                      <select
+                        name="experience"
+                        value={formData.experience || ''}
+                        onChange={handleInputChange}
+                      >
+                        <option value="">Select experience level</option>
+                        <option value="Entry">Entry Level</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Expert">Expert</option>
+                      </select>
+                    </div>
+                    
+                    <div className="admin-form-group">
+                      <label>Availability:</label>
+                      <select
+                        name="availability"
+                        value={formData.availability || ''}
+                        onChange={handleInputChange}
+                      >
+                        <option value="">Select availability</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Weekends">Weekends only</option>
+                        <option value="Flexible">Flexible hours</option>
+                      </select>
+                    </div>
                   </div>
                   
-                  <div>
-                    <label>Experience Level:</label>
-                    <select
-                      name="experience"
-                      value={formData.experience || ''}
-                      onChange={handleInputChange}
-                    >
-                      <option value="">Select experience level</option>
-                      <option value="Entry">Entry Level</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Expert">Expert</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label>Availability:</label>
-                    <select
-                      name="availability"
-                      value={formData.availability || ''}
-                      onChange={handleInputChange}
-                    >
-                      <option value="">Select availability</option>
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Weekends">Weekends only</option>
-                      <option value="Flexible">Flexible hours</option>
-                    </select>
-                  </div>
-                  
-                  <div>
+                  <div className="admin-form-group">
                     <label>Description:</label>
                     <textarea
                       name="description"
@@ -653,65 +669,74 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div>
-                    <label>Job Count:</label>
-                    <input
-                      type="number"
-                      name="jobCount"
-                      min="0"
-                      value={formData.jobCount || '0'}
-                      onChange={handleInputChange}
-                    />
+                  <div className="admin-form-row">
+                    <div className="admin-form-group">
+                      <label>Job Count:</label>
+                      <input
+                        type="number"
+                        name="jobCount"
+                        min="0"
+                        value={formData.jobCount || '0'}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    
+                    <div className="admin-form-group">
+                      <label>Completed Jobs:</label>
+                      <input
+                        type="number"
+                        name="completedJobs"
+                        min="0"
+                        value={formData.completedJobs || '0'}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    
+                    <div className="admin-form-group">
+                      <label>Rating (0-5):</label>
+                      <input
+                        type="number"
+                        name="rating"
+                        min="0"
+                        max="5"
+                        step="0.1"
+                        value={formData.rating || '0'}
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </div>
                   
-                  <div>
-                    <label>Completed Jobs:</label>
-                    <input
-                      type="number"
-                      name="completedJobs"
-                      min="0"
-                      value={formData.completedJobs || '0'}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label>Rating (0-5):</label>
-                    <input
-                      type="number"
-                      name="rating"
-                      min="0"
-                      max="5"
-                      step="0.1"
-                      value={formData.rating || '0'}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label>Member Since (e.g., Jun 2019):</label>
-                    <input
-                      type="text"
-                      name="memberSince"
-                      value={formData.memberSince || ''}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label>Is Verified:</label>
-                    <input
-                      type="checkbox"
-                      name="isVerified"
-                      checked={formData.isVerified || false}
-                      onChange={handleCheckboxChange}
-                    />
+                  <div className="admin-form-row">
+                    <div className="admin-form-group">
+                      <label>Member Since:</label>
+                      <input
+                        type="text"
+                        name="memberSince"
+                        value={formData.memberSince || ''}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Jun 2019"
+                      />
+                    </div>
+                    
+                    <div className="admin-form-group">
+                      <label className="admin-checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="isVerified"
+                          checked={formData.isVerified || false}
+                          onChange={handleCheckboxChange}
+                        />
+                        Is Verified
+                      </label>
+                    </div>
                   </div>
                 </>
               )}
 
-              <button type="submit">{showModal.action === 'create' ? 'Add' : 'Update'}</button>
-              <button type="button" onClick={handleCloseModal}>Cancel</button>
+              <div className="admin-form-buttons">
+                <button type="button" onClick={handleCloseModal}>Cancel</button>
+                <button type="submit">{showModal.action === 'create' ? 'Add' : 'Update'}</button>
+              </div>
             </form>
           </div>
         </div>
