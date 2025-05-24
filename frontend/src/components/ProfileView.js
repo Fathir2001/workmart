@@ -161,42 +161,45 @@ const ProfileView = () => {
           {updateMessage}
         </div>
       )}
-      <div className="wm-pv__image-section">
-        <img 
-          src={
-            isServiceProvider && userData.profilePic 
-              ? `http://localhost:5000/${userData.profilePic}` 
-              : defaultProfileImage
-          } 
-          alt="Profile" 
-          className="wm-pv__profile-image"
-          onError={(e) => e.target.src = defaultProfileImage}
-        />
-      </div>
       
-      <div className="wm-pv__actions">
-        {!isEditing ? (
-          <button className="wm-pv__edit-button" onClick={handleEdit}>
-            <FaEdit /> Edit Profile
-          </button>
-        ) : (
-          <div className="wm-pv__edit-actions">
-            <button className="wm-pv__save-button" onClick={handleSaveChanges}>
-              <FaSave /> Save
+      <div className="wm-pv__header">
+        <div className="wm-pv__image-section">
+          <img 
+            src={
+              isServiceProvider && userData.profilePic 
+                ? `http://localhost:5000/${userData.profilePic}` 
+                : defaultProfileImage
+            } 
+            alt="Profile" 
+            className="wm-pv__profile-image"
+            onError={(e) => e.target.src = defaultProfileImage}
+          />
+        </div>
+        
+        <div className="wm-pv__title-actions">
+          <h2 className="wm-pv__name">{userData.name || "User"}</h2>
+          
+          {!isEditing ? (
+            <button className="wm-pv__edit-button" onClick={handleEdit}>
+              <FaEdit /> Edit Profile
             </button>
-            <button className="wm-pv__cancel-button" onClick={handleCancelEdit}>
-              <FaTimes /> Cancel
-            </button>
-          </div>
-        )}
+          ) : (
+            <div className="wm-pv__edit-actions">
+              <button className="wm-pv__save-button" onClick={handleSaveChanges}>
+                <FaSave /> Save Changes
+              </button>
+              <button className="wm-pv__cancel-button" onClick={handleCancelEdit}>
+                <FaTimes /> Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       
       <div className="wm-pv__details">
         {!isEditing ? (
           // View mode
           <>
-            <h2 className="wm-pv__name">{userData.name || "User"}</h2>
-            
             <div className="wm-pv__info-section">
               <div className="wm-pv__info-item">
                 <FaEnvelope className="wm-pv__info-icon" />
@@ -288,7 +291,7 @@ const ProfileView = () => {
         ) : (
           // Edit mode
           <div className="wm-pv__edit-form">
-            <div className="wm-pv__form-group">
+            <div className="form-group">
               <label htmlFor="name">Name</label>
               <input
                 type="text"
@@ -296,11 +299,11 @@ const ProfileView = () => {
                 name="name"
                 value={editFormData.name || ""}
                 onChange={handleInputChange}
-                className="wm-pv__form-input"
+                className="form-control"
               />
             </div>
             
-            <div className="wm-pv__form-group">
+            <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
                 type="email"
@@ -308,12 +311,12 @@ const ProfileView = () => {
                 name="email"
                 value={editFormData.email || ""}
                 onChange={handleInputChange}
-                className="wm-pv__form-input"
+                className="form-control"
                 disabled={isServiceProvider} // Only regular users can edit email
               />
             </div>
             
-            <div className="wm-pv__form-group">
+            <div className="form-group">
               <label htmlFor="phone">Phone Number</label>
               <input
                 type="text"
@@ -321,84 +324,124 @@ const ProfileView = () => {
                 name={isServiceProvider ? "phoneNumber" : "phone"}
                 value={editFormData.phoneNumber || editFormData.phone || ""}
                 onChange={handleInputChange}
-                className="wm-pv__form-input"
+                className="form-control"
+                placeholder="e.g., 0771234567"
               />
             </div>
             
-            <div className="wm-pv__form-group">
+            <div className="form-group">
               <label htmlFor="location">Location</label>
-              <input
-                type="text"
+              <select
                 id="location"
                 name="location"
                 value={editFormData.location || ""}
                 onChange={handleInputChange}
-                className="wm-pv__form-input"
-              />
+                className="form-control"
+              >
+                <option value="">Select a location</option>
+                <option value="Colombo">Colombo</option>
+                <option value="Gampaha">Gampaha</option>
+                <option value="Kalutara">Kalutara</option>
+                <option value="Kandy">Kandy</option>
+                <option value="Matale">Matale</option>
+                <option value="Nuwara Eliya">Nuwara Eliya</option>
+                <option value="Galle">Galle</option>
+                <option value="Matara">Matara</option>
+                <option value="Hambantota">Hambantota</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Kilinochchi">Kilinochchi</option>
+                <option value="Mannar">Mannar</option>
+                <option value="Mullaitivu">Mullaitivu</option>
+                <option value="Vavuniya">Vavuniya</option>
+                <option value="Batticaloa">Batticaloa</option>
+                <option value="Ampara">Ampara</option>
+                <option value="Trincomalee">Trincomalee</option>
+                <option value="Kurunegala">Kurunegala</option>
+                <option value="Puttalam">Puttalam</option>
+                <option value="Anuradhapura">Anuradhapura</option>
+                <option value="Polonnaruwa">Polonnaruwa</option>
+                <option value="Badulla">Badulla</option>
+                <option value="Monaragala">Monaragala</option>
+                <option value="Ratnapura">Ratnapura</option>
+                <option value="Kegalle">Kegalle</option>
+              </select>
             </div>
             
             {isServiceProvider && (
               <>
-                <div className="wm-pv__form-group">
+                <div className="form-group">
                   <label htmlFor="description">Description</label>
                   <textarea
                     id="description"
                     name="description"
                     value={editFormData.description || ""}
                     onChange={handleInputChange}
-                    className="wm-pv__form-textarea"
+                    className="form-control"
                     rows="4"
+                    placeholder="Tell others about your skills and experience"
                   />
                 </div>
                 
-                <div className="wm-pv__form-group">
+                <div className="form-group">
                   <label htmlFor="category">Category</label>
                   <select
                     id="category"
                     name="category"
                     value={editFormData.category || ""}
                     onChange={handleInputChange}
-                    className="wm-pv__form-select"
+                    className="form-control"
                   >
                     <option value="">Select a category</option>
-                    <option value="Plumber">Plumber</option>
-                    <option value="Electrician">Electrician</option>
-                    <option value="Carpenter">Carpenter</option>
-                    <option value="Painter">Painter</option>
-                    <option value="Cleaner">Cleaner</option>
-                    <option value="Gardener">Gardener</option>
-                    <option value="Technician">Technician</option>
-                    <option value="Other">Other</option>
+                    <option value="Technicians">Technicians</option>
+                    <option value="AC Repairs">AC Repairs</option>
+                    <option value="CCTV">CCTV</option>
+                    <option value="Constructions">Constructions</option>
+                    <option value="Electricians">Electricians</option>
+                    <option value="Electronic Repairs">Electronic Repairs</option>
+                    <option value="Glass & Aluminium">Glass & Aluminium</option>
+                    <option value="Iron Works">Iron Works</option>
+                    <option value="Masonry">Masonry</option>
+                    <option value="Odd Jobs">Odd Jobs</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Wood Works">Wood Works</option>
+                    <option value="Vehicles">Vehicles</option>
                   </select>
                 </div>
                 
-                <div className="wm-pv__form-group">
-                  <label htmlFor="experience">Experience</label>
-                  <input
-                    type="text"
+                <div className="form-group">
+                  <label htmlFor="experience">Experience Level</label>
+                  <select
                     id="experience"
                     name="experience"
                     value={editFormData.experience || ""}
                     onChange={handleInputChange}
-                    className="wm-pv__form-input"
-                    placeholder="e.g. 5 years"
-                  />
+                    className="form-control"
+                  >
+                    <option value="">Select experience level</option>
+                    <option value="Entry">Entry Level</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Expert">Expert</option>
+                  </select>
                 </div>
                 
-                <div className="wm-pv__form-group">
+                <div className="form-group">
                   <label htmlFor="availability">Availability</label>
-                  <input
-                    type="text"
+                  <select
                     id="availability"
                     name="availability"
                     value={editFormData.availability || ""}
                     onChange={handleInputChange}
-                    className="wm-pv__form-input"
-                    placeholder="e.g. Weekdays 9-5"
-                  />
+                    className="form-control"
+                  >
+                    <option value="">Select availability</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Weekends">Weekends only</option>
+                    <option value="Flexible">Flexible hours</option>
+                  </select>
                 </div>
                 
-                <div className="wm-pv__form-group">
+                <div className="form-group">
                   <label htmlFor="specialties">Specialties (comma separated)</label>
                   <input
                     type="text"
@@ -416,7 +459,7 @@ const ProfileView = () => {
                         specialties: specialtiesArray,
                       });
                     }}
-                    className="wm-pv__form-input"
+                    className="form-control"
                     placeholder="e.g. Bathroom fixtures, Kitchen plumbing"
                   />
                 </div>

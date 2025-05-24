@@ -1,88 +1,109 @@
 .wm-pv__container {
   display: flex;
+  flex-direction: column;
   max-width: 900px;
-  margin: 120px auto 40px; /* Increased top margin to create space below navbar */
+  margin: 120px auto 40px;
   background: #fff;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-  
-.wm-pv__image-section {
-  flex: 1;
+
+.wm-pv__header {
   display: flex;
-  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
   align-items: center;
 }
 
-.wm-pv__profile-image {
-  width: 250px;
-  height: 250px;
-  border-radius: 10px;
-  object-fit: cover;
+.wm-pv__title-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+  
+.wm-pv__image-section {
+  width: 180px;
+  height: 180px;
 }
 
-.wm-pv__details {
-  flex: 2;
-  padding: 20px;
+.wm-pv__profile-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
 }
 
 .wm-pv__name {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 600;
   margin-bottom: 5px;
-  color: black;
+  color: #333;
 }
 
+.wm-pv__details {
+  padding: 0;
+}
+
+/* Rating section */
 .wm-pv__rating-section {
-  margin-bottom: 25px;
-  margin-top: 25px;
+  margin: 25px 0;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
 }
 
 .wm-pv__rating {
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-bottom: 15px;
 }
 
 .wm-pv__star-icon {
   color: #f4b400;
-  margin-bottom: 25px;
+  font-size: 18px;
 }
 
 .wm-pv__reviews {
-  margin-bottom: 25px;
   font-size: 14px;
-  color: #777;
+  color: #666;
+  margin-left: 8px;
 }
 
 .wm-pv__description {
-  font-size: 14px;
-  margin-top: 5px;
-  text-align: left;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #444;
 }
 
-.wm-pv__registration-title {
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
+/* Section titles */
+.wm-pv__registration-title,
+.wm-pv__specialties-title {
+  margin: 20px 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
 }
 
+/* Badge styling */
 .wm-pv__registrations {
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 20px;
 }
 
 .wm-pv__badge {
-  background: #ddd;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  text-align: center;
+  background: #eee;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #333;
+  display: inline-block;
 }
 
 .wm-pv__badge--plumbing {
@@ -90,37 +111,58 @@
   color: #fff;
 }
 
-.wm-pv__contact-section {
-  margin-top: 20px;
+.wm-pv__badge--electricians {
+  background: #5bc0de;
+  color: #fff;
 }
 
-.wm-pv__contact-item {
+.wm-pv__badge--technicians {
+  background: #428bca;
+  color: #fff;
+}
+
+.wm-pv__badge--woodworks {
+  background: #8a6d3b;
+  color: #fff;
+}
+
+/* Info items styling */
+.wm-pv__info-section {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.wm-pv__info-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 5px 0;
+  gap: 15px;
+  font-size: 15px;
+  color: #444;
 }
 
-.wm-pv__icon {
-  color: #555;
+.wm-pv__info-icon {
+  color: #3498db;
+  font-size: 18px;
+  min-width: 18px;
 }
 
-.wm-pv__show-number,
-.wm-pv__chat-link {
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: none;
+.wm-pv__info-label {
+  font-weight: 600;
+  margin-right: 5px;
 }
 
-.wm-pv__show-number:hover,
-.wm-pv__chat-link:hover {
-  text-decoration: underline;
-}
-
+/* Loading and error states */
 .wm-pv__container--loading, 
 .wm-pv__container--error {
   padding: 40px;
   text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .wm-pv__error-message {
@@ -132,141 +174,155 @@
 .wm-pv__login-link {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #3498db;
   color: white;
   text-decoration: none;
   border-radius: 4px;
   font-weight: 500;
-}
-
-.wm-pv__login-link:hover {
-  background-color: #0069d9;
-}
-
-.wm-pv__info-section {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.wm-pv__info-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 16px;
-}
-
-.wm-pv__info-icon {
-  color: #007bff;
-  font-size: 18px;
-}
-
-.wm-pv__info-label {
-  font-weight: 600;
-  margin-right: 5px;
-}
-
-.wm-pv__no-skills {
-  color: #777;
-  font-style: italic;
-}
-
-.wm-pv__actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  padding: 0 20px;
-}
-
-.wm-pv__edit-button,
-.wm-pv__save-button,
-.wm-pv__cancel-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
   transition: background-color 0.3s;
 }
 
+.wm-pv__login-link:hover {
+  background-color: #2980b9;
+}
+
+/* Edit/Save/Cancel buttons styling */
+.wm-pv__edit-button,
+.wm-pv__save-button,
+.wm-pv__cancel-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 180px;
+}
+
 .wm-pv__edit-button {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #f8f9fa;
+  color: #3498db;
+  border: 1px solid #3498db;
 }
 
 .wm-pv__save-button {
-  background-color: #4CAF50;
+  background-color: #3498db;
   color: white;
-  margin-right: 10px;
 }
 
 .wm-pv__cancel-button {
-  background-color: #f44336;
-  color: white;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #6c757d;
 }
 
 .wm-pv__edit-button:hover {
-  background-color: #e0e0e0;
+  background-color: #3498db;
+  color: white;
 }
 
 .wm-pv__save-button:hover {
-  background-color: #45a049;
+  background-color: #2980b9;
 }
 
 .wm-pv__cancel-button:hover {
-  background-color: #d32f2f;
+  background-color: #6c757d;
+  color: white;
 }
 
 .wm-pv__edit-actions {
   display: flex;
+  gap: 10px;
 }
 
+/* Form styling */
 .wm-pv__edit-form {
   width: 100%;
 }
 
-.wm-pv__form-group {
-  margin-bottom: 15px;
+.form-group {
+  margin-bottom: 20px;
 }
 
-.wm-pv__form-group label {
+.form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
   color: #333;
+  font-size: 15px;
 }
 
-.wm-pv__form-input,
-.wm-pv__form-textarea,
-.wm-pv__form-select {
+.form-control {
   width: 100%;
-  padding: 10px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 15px;
+  color: #333;
+  transition: border-color 0.3s;
 }
 
-.wm-pv__form-textarea {
+.form-control:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-control::placeholder {
+  color: #aaa;
+}
+
+textarea.form-control {
   resize: vertical;
   min-height: 100px;
 }
 
+select.form-control {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 15px;
+}
+
+/* Success message notification */
 .wm-pv__update-message {
-  background-color: #4CAF50;
+  background-color: #2ecc71;
   color: white;
-  padding: 10px 15px;
+  padding: 12px 20px;
   border-radius: 4px;
   margin-bottom: 20px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
   animation: fadeIn 0.3s ease-out;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .wm-pv__header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .wm-pv__title-actions {
+    align-items: center;
+  }
+  
+  .wm-pv__edit-actions {
+    justify-content: center;
+  }
 }
