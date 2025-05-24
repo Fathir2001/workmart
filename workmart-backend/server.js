@@ -11,10 +11,10 @@ const adminRoutes = require('./routes/adminRoutes');
 const authRoutes = require('./routes/authRoutes');
 const User = require('./models/User'); // Updated to match directory and file name
 
-// Add the verify admin middleware
+// verify admin middleware
 const { verifyAdmin } = require('./middleware/auth');
 
-// Add this line
+
 const publicRoutes = require('./routes/publicRoutes');
 
 const app = express();

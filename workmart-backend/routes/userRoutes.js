@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const ServiceProvider = require('../models/ServiceProvider'); // Add this import
+const ServiceProvider = require('../models/ServiceProvider'); 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { auth } = require('../middleware/auth');
