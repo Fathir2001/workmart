@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaMoneyBillWave, FaTag, FaEye } from 'react-icons/fa';
 import SideBar from './SideBar';
 import '../styles/Payment.css';
+import Swal from 'sweetalert2';
 
 // Import banner images from src/images/banners/
 import allServices from '../Images/banners/all-services.jpg';
@@ -141,7 +142,28 @@ const Payment = () => {
   };
 
   const handleNavigateToPostJob = () => {
-    navigate('/postjob');
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    if (!token || !user) {
+      // Store intended destination in localStorage before redirecting to login
+      localStorage.setItem('redirectAfterLogin', '/postjob');
+      
+      Swal.fire({
+        title: 'Authentication Required',
+        text: 'Please login to post a job',
+        icon: 'warning',
+        confirmButtonText: 'Login Now',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+    } else {
+      navigate('/postjob');
+    }
   };
 
   const handleImageError = (e) => {

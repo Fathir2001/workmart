@@ -46,10 +46,16 @@ const Login = () => {
       setSuccess('Login successful!');
       setError(null);
 
-      // Navigate based on user role
+      // Check if there's a redirect saved in localStorage
+      const redirectPath = localStorage.getItem('redirectAfterLogin');
+
+      // Navigate based on redirect or user role
       setTimeout(() => {
-        if (userProfileResponse.data.isAdmin) {
-          window.location.href = '/admin';
+        if (redirectPath) {
+          localStorage.removeItem('redirectAfterLogin'); // Clear the saved redirect
+          navigate(redirectPath);
+        } else if (userProfileResponse.data.isAdmin) {
+          navigate('/admin');
         } else {
           navigate('/');
         }
