@@ -31,38 +31,56 @@ const ViewWorkers = () => {
   const [filteredProviders, setFilteredProviders] = useState([]);
 
   const bannerImages = [
-    allServices,
-    technicians,
-    acReports,
-    cctv,
-    electricians,
-    plumbing,
-    ironWorks,
-    woodWorks,
+    allServices,           // ALL
+    technicians,           // Technicians
+    acReports,             // AC Repairs (previously AC Reports)
+    cctv,                  // CCTV
+    electricians,          // Electricians
+    plumbing,              // Plumbing
+    ironWorks,             // Iron Works
+    woodWorks,             // Wood Works
+    fallbackBanner,        // Constructions - using fallback for now
+    fallbackBanner,        // Electronic Repairs - using fallback for now
+    fallbackBanner,        // Glass & Aluminium - using fallback for now
+    fallbackBanner,        // Masonry - using fallback for now
+    fallbackBanner,        // Odd Jobs - using fallback for now
+    fallbackBanner,        // Vehicles - using fallback for now
   ];
 
   // Define available categories
   const categories = useMemo(() => [
     'ALL',
     'Technicians',
-    'AC Reports',
+    'AC Repairs', // Changed from 'AC Reports' to match SideBar
     'CCTV',
     'Electricians',
-    'Iron Works',
     'Plumbing',
+    'Iron Works',
     'Wood Works',
+    'Constructions',
+    'Electronic Repairs',
+    'Glass & Aluminium',
+    'Masonry',
+    'Odd Jobs',
+    'Vehicles'
   ], []);
 
   // Map UI-friendly category names to backend formats
   const categoryMap = useMemo(() => ({
     'ALL': null,
     'Technicians': 'TECHNICIANS',
-    'AC Reports': 'AC_REPORTS',
+    'AC Repairs': 'AC_REPORTS', // Updated key to match SideBar
     'CCTV': 'CCTV',
     'Electricians': 'ELECTRICIANS',
     'Iron Works': 'IRON_WORKS',
     'Plumbing': 'PLUMBING',
     'Wood Works': 'WOOD_WORKS',
+    'Constructions': 'CONSTRUCTIONS',
+    'Electronic Repairs': 'ELECTRONIC_REPAIRS',
+    'Glass & Aluminium': 'GLASS_ALUMINIUM',
+    'Masonry': 'MASONRY',
+    'Odd Jobs': 'ODD_JOBS',
+    'Vehicles': 'VEHICLES'
   }), []);
 
   useEffect(() => {
