@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaSignOutAlt } from 'react-icons/fa';
 import '../styles/Navbar2.css';
+import Logo from '../Images/workmart_logo.png'
 
 const NavBar2 = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -85,7 +86,10 @@ const NavBar2 = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div className="navbar-brand">Work Mart</div>
+        <div className="navbar-brand">
+          <img src={Logo} alt="Work Mart Logo" className="navbar-logo" />
+          Work Mart
+        </div>
         
         <div className="navbar-links">
           <a href="/" className="nav-link">Home</a>
